@@ -1,5 +1,5 @@
 // rendering.js
-
+import * as THREE from 'three';
 import * as motor from './motor.js';
 
 // Función para inicializar la escena, la cámara y el renderizador

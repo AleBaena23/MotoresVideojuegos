@@ -1,7 +1,5 @@
 // camaras.js
-
-
-
+import * as THREE from 'three';
 // Definir las cámaras disponibles
 const cameras = [
     // Perspectiva estándar

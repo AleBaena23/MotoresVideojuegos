@@ -1,5 +1,5 @@
 // meshes.js
-
+import * as THREE from 'three';
 import { initRenderer, render, handleWindowResize } from './rendering.js';
 import { switchToNextCamera } from './camaras.js'; // Importar la función switchToNextCamera desde cameras.js
 

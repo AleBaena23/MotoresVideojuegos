@@ -1,5 +1,6 @@
 //Imports
 
+import Logger from './logger'
 import Input from './inputs';
 import Window from './window';
 import Renderer from './rendering';
@@ -19,16 +20,19 @@ class Luisito{
         this.totalElapsedInSeconds = 0
 
         //HERRAMIENTAS QUE AÑADIMOS NOSOTROS
+        this.logger = new Logger(this);
         this.window = new Window(this);
         this.scene = new THREE.Scene();
-        this.camera = new Camera(this)
+        this.camera = new Camera(this);
         
         this.renderer = new Renderer(this);
         this.input = new Input(this);
 
         this.mesh = new Mesh(this);
         
-        console.log("Window initialized:", this.window); // Agregar esta línea
+        this.logger.info("Pidiendo a Luisito que baje al portal");
+        this.logger.info("Luisito abre la puerta, MOTOR INICIALIZADO");
+        this.logger.info("Window initialized:", this.window); // Agregar esta línea
         
         
 

@@ -3,11 +3,8 @@ import { EventDispatcher } from "three";
 export default class Window extends EventDispatcher{
 
     constructor(luisito){
-        console.log("Initializing Window...");
         super();
         // Otras inicializaciones
-    
-        console.log("Window initialized!");
         this.width = window.innerWidth
         this.height = window.innerHeight
         this.aspectRatio = this.width / this.height

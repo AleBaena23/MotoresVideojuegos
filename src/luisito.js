@@ -11,6 +11,7 @@ import * as THREE from 'three'
 class Luisito{
     constructor(){
 
+        //Game loop
         this.startTime = Date.now()
         this.lastFrameTime = this.startTime
         this.dt = 1/60
@@ -18,13 +19,18 @@ class Luisito{
         this.totalElapsedInSeconds = 0
 
         //HERRAMIENTAS QUE AÑADIMOS NOSOTROS
-        this.input = new Input(this);
-        this.renderer = new Renderer(this);
-        this.mesh = new Mesh(this)
         this.window = new Window(this);
-        console.log("Window initialized:", this.window); // Agregar esta línea
-        this.scene = new THREE.Scene()
+        this.scene = new THREE.Scene();
         this.camera = new Camera(this)
+        
+        this.renderer = new Renderer(this);
+        this.input = new Input(this);
+
+        this.mesh = new Mesh(this);
+        
+        console.log("Window initialized:", this.window); // Agregar esta línea
+        
+        
 
         this.window.addEventListener('resize', (e) => {this.resize(e)})
         
@@ -48,7 +54,6 @@ start(){
 
 frame(){
 
-    this.debug.stats.begin()
     window.requestAnimationFrame(() => {this.frame()})
 
     const now = Date.now()

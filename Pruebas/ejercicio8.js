@@ -33,7 +33,7 @@ const enemy = luisito.mesh.CreateFromGeometry(
     new THREE.MeshBasicMaterial({color:'crimson'})
 )
 
-enemy.position.set(-100,10,0)
+enemy.position.set(-100,10,100)
 
 
 // Velocidad constante

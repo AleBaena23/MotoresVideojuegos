@@ -12,7 +12,7 @@ export default class Camera{
             this.window.height,-this.window.height
         )
 
-        this.instance.position.set(0,0,125)
+        this.instance.position.set(0,0,0)
         this.scene.add(this.instance)
     }
 

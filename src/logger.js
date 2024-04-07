@@ -13,6 +13,15 @@ export default class Logger{
     }
 
     debug(message) {
-        this.log("DEB", message, "color: blue;")
+        this.log("DEB", message, "color: deepskyblue;")
     }
+
+    debug_a(message) {
+        this.log("DEB", message, "color: skyblue;")
+    }
+
+    debug_b(message) {
+        this.log("DEB", message, "color: dodgerblue;")
+    }
+
 }

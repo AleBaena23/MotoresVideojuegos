@@ -131,7 +131,7 @@ luisito.update = (dt) => {
     const zombieACanSeePlayer = canSeePlayer(zombieA, player, facingDirectionA, fieldOfView);
     const zombieBCanSeePlayer = canSeePlayer(zombieB, player, facingDirectionB, fieldOfView);
 
-    // Calcula el desplazamiento basado en la velocidad constante
+    // Calcula el desplazamiento basado en la aceleración constante
     const displacement = enemySpeed * dt;
 
     // Calcula la dirección del movimiento del enemigo
@@ -152,18 +152,22 @@ luisito.update = (dt) => {
         zombieA.position.add(movementA);
       // Cambia el color del material del zombieA a rojo
       zombieA.material.color.set(0xff0000); // Rojo en formato hexadecimal
+      luisito.logger.debug_a("El zombie A ve al jugador")
     } else {
         // Cambia el color del material del zombieA a verde si no ve al jugador
         zombieA.material.color.set(0x00ff00); // Verde en formato hexadecimal
+        luisito.logger.debug_a("El zombie A no ve al jugador")
     }  
     
     if (zombieBCanSeePlayer){
         zombieB.position.add(movementB);
     // Cambia el color del material del zombieA a rojo
     zombieB.material.color.set(0xff0000); // Rojo en formato hexadecimal
+    luisito.logger.debug_b("El zombie B ve al jugador")
 } else {
     // Cambia el color del material del zombieA a verde si no ve al jugador
     zombieB.material.color.set(0xFFFF00); // Verde en formato hexadecimal
+    luisito.logger.debug_b("El zombie B no ve al jugador")
 }  
     
 

@@ -19,9 +19,10 @@ new THREE.MeshBasicMaterial({color: 'skyblue'})
 
 )
 
-const axeHelperP = luisito.mesh.CreateAxesHelper(20)
-const axeHelperZA = luisito.mesh.CreateAxesHelper(20)
-const axeHelperZB = luisito.mesh.CreateAxesHelper(20)
+const tamaño = 30
+const axeHelperP = luisito.mesh.CreateAxesHelper(tamaño)
+const axeHelperZA = luisito.mesh.CreateAxesHelper(tamaño)
+const axeHelperZB = luisito.mesh.CreateAxesHelper(tamaño)
 const grid = luisito.mesh.CreateFromGeometry(
     new THREE.PlaneGeometry(300,300,20,20),
     new THREE.MeshBasicMaterial({color:'red',wireframe:true})

@@ -13,12 +13,15 @@ luisito.camera.instance.zoom = 20
 luisito.camera.instance.updateProjectionMatrix()
 
 const player = luisito.mesh.CreateFromGeometry(
-    
+
 new THREE.BoxGeometry(20,20,20),
 new THREE.MeshBasicMaterial({color: 'skyblue'})
 
 )
-  
+
+const axeHelperP = luisito.mesh.CreateAxesHelper(20)
+const axeHelperZA = luisito.mesh.CreateAxesHelper(20)
+const axeHelperZB = luisito.mesh.CreateAxesHelper(20)
 const grid = luisito.mesh.CreateFromGeometry(
     new THREE.PlaneGeometry(300,300,20,20),
     new THREE.MeshBasicMaterial({color:'red',wireframe:true})
@@ -54,7 +57,7 @@ const facingDirectionA = { x: 1, y: 0 }; // Dirección del zombie A
 const facingDirectionB = { x: 1, y: 0 }; // Dirección del zombie B
 
 // Definimos el campo de visión del zombie en radianes
-const fieldOfView = Math.PI; // 180⁰ en radianes
+const fieldOfView = Math.PI/4; // 180⁰ en radianes
 
 // Función para calcular el ángulo entre dos vectores
 function angleBetweenVectors(v1, v2) {
@@ -97,6 +100,29 @@ function moveCube() {
 }
 
 luisito.update = (dt) => {
+
+    // Esta linea permite que el axeshelper esté siempre en la misma posicion que el player
+    axeHelperP.position.set(player.position.x, player.position.y, player.position.z);
+
+    axeHelperZA.position.set(zombieA.position.x, zombieA.position.y, zombieA.position.z);
+    axeHelperZB.position.set(zombieB.position.x, zombieB.position.y, zombieB.position.z);
+
+
+   // Añadimos rotación a los zombies y a sus axesHelper
+   //zombieA.rotation.y += 0.01;
+   //axeHelperZA.rotation.y += 0.01;
+
+   //zombieB.rotation.y -= 0.01;
+   //axeHelperZB.rotation.y -= 0.01;
+
+
+   // Actualizamos las direcciones de los zombies después de la rotación
+   facingDirectionA.x = Math.cos(zombieA.rotation.y);
+   facingDirectionA.y = Math.sin(zombieA.rotation.y);
+
+   facingDirectionB.x = Math.cos(zombieB.rotation.y);
+   facingDirectionB.y = Math.sin(zombieB.rotation.y);
+
 
 
     moveCube();

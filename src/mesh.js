@@ -6,6 +6,12 @@ export default class Mesh{
     
     }
 
+    CreateAxesHelper(tamaño){
+        const axesHelper = new THREE.AxesHelper(tamaño)
+        this.scene.add(axesHelper)
+        return axesHelper
+    }
+
    CreateFromVertices(vertices,color){
     const geometry = new THREE.BufferGeometry()
     const positionsAttribute = new THREE.BufferAttribute(vertices,3)

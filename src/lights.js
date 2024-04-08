@@ -10,7 +10,7 @@ export default class Light{
 
     CreateAmbient(color, intensity){
         const light = new THREE.AmbientLight( color, intensity ); // soft white light
-        scene.add( light );
+        this.scene.add(light);
         return light;
 
     }
@@ -18,14 +18,14 @@ export default class Light{
     CreateDirectional(color, intensity){
         // White directional light at half intensity shining from the top.
         const directionalLight = new THREE.DirectionalLight( color, intensity );
-        scene.add( directionalLight );
+        this.scene.add( directionalLight );
         return directionalLight;
     }
     
     CreatePoint(color, intensity){
         const light = new THREE.PointLight( color, intensity, 100 ); //PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
         light.position.set( 50, 50, 50 );
-        scene.add( light );
+        this.scene.add( light );
         return light
     }
 

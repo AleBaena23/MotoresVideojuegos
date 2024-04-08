@@ -6,6 +6,7 @@ import Window from './window';
 import Renderer from './rendering';
 import Camera from './camara'
 import Mesh from './mesh'
+import Light from './lights'
 import * as THREE from 'three'
     
     
@@ -29,7 +30,7 @@ class Luisito{
         this.input = new Input(this);
 
         this.mesh = new Mesh(this);
-        
+        this.light = new Light(this)
         this.logger.info("Pidiendo a Luisito que baje al portal");
         this.logger.info("Luisito abre la puerta, MOTOR INICIALIZADO");
         this.logger.info("Window initialized:", this.window); // Agregar esta línea

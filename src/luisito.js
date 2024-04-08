@@ -68,6 +68,7 @@ frame(){
     // Llamar a la función de actualización
     this.update(this.dt);
     
+    this.resize()
     // Renderizar la escena
     this.renderer.frame();
 

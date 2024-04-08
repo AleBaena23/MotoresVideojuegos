@@ -12,6 +12,7 @@ export default class Light{
     CreateAmbient(color, intensity){
         const light = new THREE.AmbientLight( color, intensity ); // soft white light
         this.scene.add(light);
+        light.castShadow = true
         return light;
 
     }
@@ -22,10 +23,11 @@ export default class Light{
         return HemisphereLight
     }
 
-    CreateDirectional(color, intensity, helper){
+    CreateDirectional(color, intensity){
         // White directional light at half intensity shining from the top.
         const directionalLight = new THREE.DirectionalLight( color, intensity );
         this.scene.add( directionalLight );
+        directionalLight.castShadow = true
         return directionalLight;
     }
     
@@ -33,6 +35,7 @@ export default class Light{
         const light = new THREE.PointLight( color, intensity, distance, decay); //PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
         light.position.set( 50, 50, 50 );
         this.scene.add( light );
+        light.castShadow = true
         return light
     }
 
@@ -50,10 +53,11 @@ export default class Light{
                 try{
                 helper = new THREE.DirectionalLightHelper(lightObject, 1,colour);
                 this.scene.add(helper);
+                return helper;
                 }
                 catch(error){
-                    luisito.logger.error(error);
-                    luisito.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Directional, DirectionalLight, white)");
+                    this.logger.error(error);
+                    this.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Directional, DirectionalLight, white)");
                 }
                 break;
 
@@ -70,10 +74,11 @@ export default class Light{
                 try{
                 helper = new THREE.HemisphereLight(lightObject, 1, colour);
                 this.scene.add(helper);
+                return helper;
                 }
                 catch(error){
-                    luisito.logger.error(error);
-                    luisito.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Hemisphere, HemisphereLight, white)");
+                    this.logger.error(error);
+                    this.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Hemisphere, HemisphereLight, white)");
                 }
                 break;
 
@@ -84,15 +89,16 @@ export default class Light{
                 try{
                 helper = new THREE.PointLightHelper(lightObject, 1, colour)
                 this.scene.add(helper);
+                return helper;
                 }
                 catch(error){
-                    luisito.logger.error(error);
-                    luisito.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Point, PointLight, white)");
+                    this.logger.error(error);
+                    this.logger.error("Se ha introducido un tipo de luz no compatible con el objeto insertado. \n Los tipos de luces tienen que concordar con el objeto. \n Por ejemplo CreateLightHelper(Point, PointLight, white)");
                 }
                 break;
 
             default:
-            luisito.logger.error("Se ha introducido un tipo de luz no reconocido. Pruebe con los tipos Directional, Hemisphere o Point");
+            this.logger.error("Se ha introducido un tipo de luz no reconocido. Pruebe con los tipos Directional, Hemisphere o Point");
         }
     }
 

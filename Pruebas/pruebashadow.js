@@ -9,13 +9,13 @@ const ambientLight = luisito.Light.CreateAmbient('white',0.5)
 const directionalLight = luisito.Light.CreateDirectional('white',1)
 directionalLight.position.set(5,5,1)
 
-const planeMesh = stan.mesh.CreateFromGeometry(
+const planeMesh = luisito.mesh.CreateFromGeometry(
     new THREE.PlaneGeometry(10,10),
     new THREE.MeshStandardMaterial()
 )
 planeMesh.rotateX(-Math.PI/2)
 
-const cubeMesh = stan.mesh.CreateFromGeometry(
+const cubeMesh = luisito.mesh.CreateFromGeometry(
     new THREE.BoxGeometry(1,1,1),
     new THREE.MeshStandardMaterial({color: 'crimson'})
 )

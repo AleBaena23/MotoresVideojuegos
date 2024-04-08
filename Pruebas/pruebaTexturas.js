@@ -1,7 +1,10 @@
 import * as THREE from 'three'
 import Luisito from '/src/luisito.js';
 
-const luisito = new Luisito
+const luisito = new Luisito()
+
+const renderer = luisito.renderer
+
 
 luisito.camera.instance.position.set(0,0,2.25)
 
@@ -28,9 +31,12 @@ const alphaTexture = textureLoader.load('/static/textures/Door/Door_Wood_001_opa
 /**LUCES */
 
 const ambientLight = luisito.light.CreateAmbient('white', 1)
-const directionalLight = luisito.light.CreateDirectional('white',1)
-directionalLight.position.set(5,3,3)
+const directionalLight = luisito.light.CreateDirectional('white',5)
+directionalLight.position.set(2,1,0)
 
+const helper = new THREE.DirectionalLightHelper(directionalLight, 1,'blue');
+
+luisito.scene.add(helper);
 
 /**MESH */
 
@@ -56,11 +62,30 @@ material.alphaMap = alphaTexture
 
 const planeMesh = luisito.mesh.CreateFromGeometry(geometry,material)
 luisito.scene.add(planeMesh)
+planeMesh.rotateY(0.5)
+planeMesh.rotateX(-0.5)
 
+
+const sueloMesh = luisito.mesh.CreateFromGeometry(
+
+    new THREE.PlaneGeometry(5,5,1),
+    new THREE.MeshStandardMaterial({color: 'white'}),
+
+
+)
+sueloMesh.castShadow = true
+sueloMesh.receiveShadow = true
+
+planeMesh.castShadow = true
+planeMesh.receiveShadow = true
+
+sueloMesh.position.set(0,0,-1)
 luisito.update = (dt) => {
     //planeMesh.rotateX(0.01)
     //planeMesh.rotateY(0.01)
     planeMesh.rotateZ(0.01)
 }
+
+directionalLight.target = planeMesh; // Establece el plano como el objetivo del directionalLight
 
 luisito.start()

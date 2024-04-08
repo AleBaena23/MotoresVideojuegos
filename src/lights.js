@@ -11,7 +11,7 @@ export default class Light{
     //MARK: Métodos para crear luces
     CreateAmbient(color, intensity){
         const light = new THREE.AmbientLight( color, intensity ); // soft white light
-        scene.add( light );
+        this.scene.add(light);
         return light;
 
     }
@@ -25,14 +25,14 @@ export default class Light{
     CreateDirectional(color, intensity, helper){
         // White directional light at half intensity shining from the top.
         const directionalLight = new THREE.DirectionalLight( color, intensity );
-        scene.add( directionalLight );
+        this.scene.add( directionalLight );
         return directionalLight;
     }
     
     CreatePoint(color, intensity, distance, decay){
         const light = new THREE.PointLight( color, intensity, distance, decay); //PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
         light.position.set( 50, 50, 50 );
-        scene.add( light );
+        this.scene.add( light );
         return light
     }
 

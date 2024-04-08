@@ -1,5 +1,7 @@
 import * as THREE from 'three';
 
+// Se podría implementar un booleano para decidir si el renderer tiene sombras de forma predeterminada.
+
 export default class Renderer {
     constructor(luisito) {
         this.scene = luisito.scene;

@@ -1,5 +1,7 @@
 import * as THREE from 'three'
 
+// Se podría implementar un booleano que en los métodos permita a los objetos tener la propiedad de proyectar sombras o no.
+
 export default class Mesh{
     constructor(luisito){
         this.scene = luisito.scene

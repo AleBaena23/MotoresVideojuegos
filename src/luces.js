@@ -6,6 +6,7 @@ export default class Luz {
         // Importar escena
         // Importar logger
         // Mensaje de inicialización de debug
+        // Booleano de castshadows para decidir si una luz tiene sombras o no
     }
 
     /*

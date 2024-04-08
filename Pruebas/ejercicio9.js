@@ -78,7 +78,7 @@ function canSeePlayer(zombiePos, playerPos, facingDirection, fov) {
     };
 
     const angleToPlayer = angleBetweenVectors(vectorToPlayer, facingDirection);
-    return angleToPlayer <= fov / 2;
+    return angleToPlayer <= fov / 2; //Booleano
 }
 
 // Función para mover el cubo en respuesta a las teclas presionadas

@@ -15,6 +15,12 @@ export default class Light{
 
     }
 
+    CreateHemisphere(SkyColour, GroundColour, Intensity) {
+        const HemisphereLight = new THREE.HemisphereLight( SkyColour, GroundColour, Intensity)
+        this.scene.add(HemisphereLight)
+        return HemisphereLight
+    }
+
     CreateDirectional(color, intensity){
         // White directional light at half intensity shining from the top.
         const directionalLight = new THREE.DirectionalLight( color, intensity );
@@ -22,8 +28,8 @@ export default class Light{
         return directionalLight;
     }
     
-    CreatePoint(color, intensity){
-        const light = new THREE.PointLight( color, intensity, 100 ); //PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
+    CreatePoint(color, intensity, distance, decay){
+        const light = new THREE.PointLight( color, intensity, distance, decay); //PointLight( color : Integer, intensity : Float, distance : Number, decay : Float )
         light.position.set( 50, 50, 50 );
         scene.add( light );
         return light

@@ -9,7 +9,7 @@ luisito.camera.instance.position.set(100,100,100);
 luisito.camera.instance.rotation.order = 'YXZ'
 luisito.camera.instance.rotation.y = Math.PI / 4;
 luisito.camera.instance.rotation.x = Math.atan(-1/Math.sqrt(2));
-luisito.camera.instance.zoom = 20
+luisito.camera.instance.zoom = 10
 luisito.camera.instance.updateProjectionMatrix()
 
 const player = luisito.mesh.CreateFromGeometry(
@@ -47,7 +47,7 @@ const zombieB = luisito.mesh.CreateFromGeometry(
 
 zombieB.position.set(-66,10,-75)
 // Velocidad constante
-const enemySpeed = 0.05; // Unidades por segundo
+const enemySpeed = 0.55; // Unidades por segundo
 
 
 
@@ -132,7 +132,10 @@ luisito.update = (dt) => {
     const zombieBCanSeePlayer = canSeePlayer(zombieB, player, facingDirectionB, fieldOfView);
 
     // Calcula el desplazamiento basado en la aceleración constante
-    const displacement = enemySpeed * dt;
+    //const displacement = enemySpeed * dt;
+
+    //Calcula el desplazamiento basado en la velocidad constante
+    const displacement = enemySpeed
 
     // Calcula la dirección del movimiento del enemigo
     const directionPA = new THREE.Vector3();

@@ -8,7 +8,7 @@ luisito.camera.instance.position.set(100,100,100);
 luisito.camera.instance.rotation.order = 'YXZ'
 luisito.camera.instance.rotation.y = Math.PI / 4;
 luisito.camera.instance.rotation.x = Math.atan(-1/Math.sqrt(2));
-luisito.camera.instance.zoom = 20
+luisito.camera.instance.zoom = 10
 luisito.camera.instance.updateProjectionMatrix()
 
 const player = luisito.mesh.CreateFromGeometry(
@@ -47,7 +47,7 @@ luisito.update = (dt) => {
     enemy.position.add(distance.multiplyScalar(dt))*/
 
     // Calcula el desplazamiento basado en la velocidad constante
-    const displacement = enemySpeed * dt;
+    const displacement = enemySpeed; 
 
     // Calcula la dirección del movimiento del enemigo
     const direction = new THREE.Vector3();
@@ -57,7 +57,7 @@ luisito.update = (dt) => {
     const movement = direction.multiplyScalar(displacement);
 
     // Aplica el movimiento al enemigo
-    //enemy.position.add(movement);
+    enemy.position.add(movement);
 
 }
 

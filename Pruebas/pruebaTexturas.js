@@ -40,7 +40,7 @@ luisito.scene.add(helper);
 
 /**MESH */
 
-const geometry = new THREE.PlaneGeometry(1,1,100,100)
+const geometry = new THREE.BoxGeometry(1,1,0)
 
 geometry.setAttribute(
     'uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2)

@@ -3,9 +3,6 @@ import Luisito from '/src/luisito.js';
 
 const luisito = new Luisito()
 
-const renderer = luisito.renderer
-
-
 luisito.camera.instance.position.set(0,0,2.25)
 
 /**TEXTURAS */

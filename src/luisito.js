@@ -27,13 +27,13 @@ class Luisito{
         this.camera = new Camera(this);
         
         this.renderer = new Renderer(this);
+        this.light = new Light(this);
         
-        //this.renderer.shadowMap.enabled = true;
 
         this.input = new Input(this);
 
         this.mesh = new Mesh(this);
-        this.light = new Light(this)
+       
 
         
         this.logger.info("Pidiendo a Luisito que baje al portal");

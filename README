@@ -1,0 +1,12 @@
+PARA ALEJANDRO BAENA:
+    Illo Ale, ya he implementado el asset manager (assetManager.js). El bicho es tanto capaz de cargar
+    imágenes como modelos en GLTF (que también pueden incluir escenas enteras).
+    
+    También he hecho un pequeño ejemplo (pruebaSources.js) que indica cómo tendría que ser la lista de
+    assets para que el assetManager se la coma e importe las cosas.
+
+    Falta hacer el ejemplo entero donde utilicemos el assetManager y la lista y se viera un modelo cargado.
+    Como palabras finales, dentro de los ejemplos del profe, todo el mapeo de las texturas se hace manualmente.
+    Intentaré ver cómo eso se podría hacer de forma automática, pa que no tengamos que estar definiendo todo el
+    rato qué textura va a qué modelo y cómo lo envuelve. Pero eso es todo lo mío por hoy, cualquier duda,
+    mándame un whatsapp.

@@ -11,14 +11,48 @@
 */
 
 export default[
+
+    //TEXTURAS PARED
     {
-        name: 'texturaArbol01',
+        name: 'colorTexture',
         type: 'texture',
-        path: '/textures/tree01/tree01_spring.png',
+        path: 'static/textures/Pared/grey_cartago_02_diff_4k.jpg'
     },
     {
-        name: 'modeloArbol01',
-        type: 'gltfmodel',
-        path: '/models/tree01.glb',
+        name: 'aoTexture',
+        type: 'texture',
+        path: 'static/textures/Pared/grey_cartago_02_ao_4k.jpg'
+    },
+    {
+        name: 'normalTexture',
+        type: 'texture',
+        path: 'static/textures/Pared/grey_cartago_02_nor_gl_4k.jpg'
+    },
+    {
+        name: 'metalTexture',
+        type: 'texture',
+        path: 'static/textures/Pared/grey_cartago_02_arm_4k.jpg'
+    },
+    {
+        name: 'roughTexture',
+        type: 'texture',
+        path: 'static/textures/Pared/grey_cartago_02_rough_4k.jpg'
+    },
+    //Modelos
+    {
+        name: 'foxModel',
+        type: 'gltfModel',
+        path: 'static/models/Fox/Fox.gltf'
+    },
+    {
+        name: 'Duck',
+        type: 'gltfModel',
+        path: 'static/models/Duck/Duck.gltf'
+    },
+    {
+        name: 'Chair',
+        type: 'gltfModel',
+        path: 'static/models/Chair/Chair.gltf'
     }
+   
 ]

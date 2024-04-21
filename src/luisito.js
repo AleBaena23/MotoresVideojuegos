@@ -1,5 +1,5 @@
 //Imports
-
+import * as THREE from 'three';
 import Logger from './logger';
 import Input from './inputs';
 import Window from './window';
@@ -8,7 +8,7 @@ import Camera from './camara';
 import Mesh from './mesh';
 import Light from './lights';
 import AssetManager from './assetManager';
-import * as THREE from 'three';
+
     
     
 class Luisito{
@@ -22,20 +22,23 @@ class Luisito{
         this.totalElapsedInSeconds = 0
 
         //HERRAMIENTAS QUE AÑADIMOS NOSOTROS
-        this.logger = new Logger(this);
-        this.window = new Window(this);
+        this.input = new Input(this);
         this.scene = new THREE.Scene();
+        this.window = new Window(this);
+        this.logger = new Logger(this);
+
+  
         this.camera = new Camera(this);
         
         this.renderer = new Renderer(this);
         this.light = new Light(this);
         
 
-        this.input = new Input(this);
+      
 
         this.mesh = new Mesh(this)
 
-        this.assetManager = new AssetManager(this);
+        this.assetManager = new AssetManager(this, this.scene);
        
 
         
@@ -46,6 +49,16 @@ class Luisito{
         
 
         this.window.addEventListener('resize', (e) => {this.resize(e)})
+
+        this.assetManager.addEventListener('ready', (e) => {
+            this.logger.info("Successfully loaded " + e.totalAssets + " assets.")
+            this.onAssetsLoaded(e)
+        })
+    
+        this.onAssetsLoaded = (e) => {
+            console.log("Se ha cargado")
+    
+        }
         
         //El metodo update
 
@@ -73,6 +86,8 @@ frame(){
     this.dt = (now-this.lastFrameTime) / 1000
     this.totalElapsed = this.lastFrameTime-this.startTime
     this.totalElapsedInSeconds = this.totalElapsed/1000
+
+    
 
     // Llamar a la función de actualización
     this.update(this.dt);

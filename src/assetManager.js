@@ -22,7 +22,7 @@ export default class AssetManager extends THREE.EventDispatcher
         this.assetsReady = false;
 
         this.loaders = {};
-        this.loaders.gltfLoader = new GLTFLoader();
+        this.loaders.GLTFLoader = new GLTFLoader();
         this.loaders.textureLoader = new THREE.TextureLoader();
     }
 
@@ -34,18 +34,24 @@ export default class AssetManager extends THREE.EventDispatcher
         {
             if(source.type === 'gltfModel')
             {
-                this.loaders.gltfLoader.load(source.path, (file) => 
-                {
-                    this.sourceLoaded(source, file);
-                })
+                this.loaders.GLTFLoader.load(
+                    source.path,
+                    (file) => 
+                    {
+                        this.sourceLoaded(source, file);
+                    }
+                )
             }
 
             else if(source.type === 'texture')
             {
-                this.loaders.textureLoader.load(source.path, (file) => 
-                {
-                    this.sourceLoaded(source, file);
-                })
+                this.loaders.textureLoader.load(
+                    source.path,
+                    (file) => 
+                    {
+                        this.sourceLoaded(source, file);
+                    }
+                )
 
             }
         }
@@ -58,15 +64,18 @@ export default class AssetManager extends THREE.EventDispatcher
     }
 
     // Esto comprueba si se ha cargado el elemento y manda un aviso al sistema de eventos.
-    sourceLoaded(source, file)
-    {
+    sourceLoaded(source, file) {
         this.assets[source.name] = file;
-        this.loaded++
-
-        if(this.loaded === this.toLoad)
-        {
+        this.loaded++;
+    
+        if (this.loaded === this.toLoad) {
             this.assetsReady = true;
-            this.dispatchEvent({type: 'ready', totalAssets: this.loaded, assets: this.assets})
+            this.dispatchEvent({
+                type: 'ready',
+                totalAssets: this.loaded,
+                assets: this.assets 
+            }); // Dispara el evento 'ready'
         }
     }
+    
 }

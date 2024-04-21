@@ -57,9 +57,9 @@ luisito.onAssetsLoaded = (e) => {
 }
 
 
-const ambientLight = luisito.light.CreateAmbient('white', 1)
-const directionalLight = luisito.light.CreateDirectional('white', 1)
-directionalLight.position.set(5, 3, 3)
+const ambientLight = luisito.light.CreateAmbient('white', 2)
+const directionalLight = luisito.light.CreateDirectional('white', 5)
+directionalLight.position.set(0, 2, 1)
 
 luisito.update = (dt) => {
     Fox.rotateY(0.02)

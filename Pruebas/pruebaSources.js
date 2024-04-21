@@ -10,23 +10,15 @@
     para que lo haga todo automáticamente.
 */
 
-export default
-[
-{
-    name: 'texturaSpecular',
-    type: 'texture',
-    path: '/textures/Specular.png',
-},
-
-{
-    name: 'texturaColor',
-    type: 'texture',
-    path: '/textures/Color.png',
-},
-
-{
-    name: 'pelota',
-    type: 'gltfModel',
-    path: '/modelos/pelota/pelota.gltf',
-},
+export default[
+    {
+        name: 'texturaArbol01',
+        type: 'texture',
+        path: '/textures/tree01/tree01_spring.png',
+    },
+    {
+        name: 'modeloArbol01',
+        type: 'gltfmodel',
+        path: '/models/tree01.glb',
+    }
 ]

@@ -1,12 +1,19 @@
 PARA ALEJANDRO BAENA:
-    Illo Ale, ya he implementado el asset manager (assetManager.js). El bicho es tanto capaz de cargar
-    imágenes como modelos en GLTF (que también pueden incluir escenas enteras).
-    
-    También he hecho un pequeño ejemplo (pruebaSources.js) que indica cómo tendría que ser la lista de
-    assets para que el assetManager se la coma e importe las cosas.
+    Hola Ale, aunque ya le he activado al objeto la cualidad de poder castear
+    y recibir sombrars, sigue sin hacer nada. Bueno, ahora la ventana en vez
+    de verse en negro se ve en blanco.
 
-    Falta hacer el ejemplo entero donde utilicemos el assetManager y la lista y se viera un modelo cargado.
-    Como palabras finales, dentro de los ejemplos del profe, todo el mapeo de las texturas se hace manualmente.
-    Intentaré ver cómo eso se podría hacer de forma automática, pa que no tengamos que estar definiendo todo el
-    rato qué textura va a qué modelo y cómo lo envuelve. Pero eso es todo lo mío por hoy, cualquier duda,
-    mándame un whatsapp.
+    A ver si le puedes echar un vistazo, porque me da en la punta de la nariz
+    que me está fallando algo de lo básico.
+
+    En fin, que no te he dicho lo que hace el código: el bicho coge un modelo
+    de árbol y una textura que he metido en la carpeta de static. Dentro del
+    código se crea un plano y un material y se intenta meter la textura uv
+    para que luego el modelo salga coloreado.
+
+    En el log de Luisito, al parecer me dice que al modelo no se le puede
+    activar la proyección de sombras porque no se pueden establecer las
+    propiedades de un objeto null... interesante. ¿Será que el método
+    no está chupando el modelo? Puede ser...
+
+    Un saludo y perdona las molestias

@@ -4,13 +4,14 @@ import Luisito from '/src/luisito.js'
 const luisito = new Luisito()
 luisito.camera.instance.position.set(0,1,7)
 
+const ambientLight = luisito.light.CreateAmbient('black',0.5)
 
-const ambientLight = luisito.light.CreateAmbient('white',0.5)
+//const hemisphereLight = luisito.light.CreateHemisphere('Blue', 'Pink', 0.5)
 
-const directionalLight = luisito.light.CreateDirectional('white',12)
+const directionalLight = luisito.light.CreateDirectional('white',3)
 directionalLight.position.set(0,2,0)
 directionalLight.castShadow = true
-const helper = new THREE.DirectionalLightHelper(directionalLight, 1,'blue');
+const helper = new THREE.DirectionalLightHelper(directionalLight, 1,'green');
 luisito.scene.add(helper);
 
 const planeMesh = luisito.mesh.CreateFromGeometry(

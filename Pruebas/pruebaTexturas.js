@@ -28,8 +28,8 @@ const alphaTexture = textureLoader.load('/static/textures/Door/Door_Wood_001_opa
 /**LUCES */
 
 const ambientLight = luisito.light.CreateAmbient('white', 1)
-const directionalLight = luisito.light.CreateDirectional('white',5)
-directionalLight.position.set(0,0,0.5)
+const directionalLight = luisito.light.CreateDirectional('white',7)
+directionalLight.position.set(0.5,0.5,2)
 
 const helper = new THREE.DirectionalLightHelper(directionalLight, 1,'blue');
 
@@ -62,7 +62,7 @@ luisito.scene.add(planeMesh)
 planeMesh.rotateY(0.5)
 planeMesh.rotateX(-0.5)
 
-
+planeMesh.position.set(0,0,-1.3)
 const sueloMesh = luisito.mesh.CreateFromGeometry(
 
     new THREE.PlaneGeometry(2,2,1),
@@ -76,7 +76,7 @@ sueloMesh.receiveShadow = true
 planeMesh.castShadow = true
 planeMesh.receiveShadow = true
 
-sueloMesh.position.set(0,0,-1)
+sueloMesh.position.set(0,0,-4)
 luisito.update = (dt) => {
     planeMesh.rotateX(0.01)
     //planeMesh.rotateY(0.01)

@@ -1,13 +1,14 @@
 //Imports
 
-import Logger from './logger'
+import Logger from './logger';
 import Input from './inputs';
 import Window from './window';
 import Renderer from './rendering';
-import Camera from './camara'
-import Mesh from './mesh'
-import Light from './lights'
-import * as THREE from 'three'
+import Camera from './camara';
+import Mesh from './mesh';
+import Light from './lights';
+import AssetManager from './assetManager';
+import * as THREE from 'three';
     
     
 class Luisito{
@@ -32,7 +33,9 @@ class Luisito{
 
         this.input = new Input(this);
 
-        this.mesh = new Mesh(this);
+        this.mesh = new Mesh(this)
+
+        this.assetManager = new AssetManager(this);
        
 
         

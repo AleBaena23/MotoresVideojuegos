@@ -25,9 +25,10 @@ export default class Mesh{
 
    CreateFromGeometry(geometry,material){
     const mesh = new THREE.Mesh(geometry, material)
-    this.scene.add(mesh)
     mesh.castShadow = true
     mesh.recieveShadow = true
+    this.scene.add(mesh)
+   
     return mesh
    }
 }

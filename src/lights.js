@@ -12,7 +12,6 @@ export default class Light{
     CreateAmbient(color, intensity){
         const light = new THREE.AmbientLight( color, intensity ); // soft white light
         this.scene.add(light);
-        light.castShadow = true
         return light;
 
     }
@@ -27,7 +26,7 @@ export default class Light{
         // White directional light at half intensity shining from the top.
         const directionalLight = new THREE.DirectionalLight( color, intensity );
         this.scene.add( directionalLight );
-        directionalLight.castShadow = true
+        directionalLight.castShadow = true;
         return directionalLight;
     }
     

@@ -1,19 +1,11 @@
-PARA ALEJANDRO BAENA:
-    Hola Ale, aunque ya le he activado al objeto la cualidad de poder castear
-    y recibir sombrars, sigue sin hacer nada. Bueno, ahora la ventana en vez
-    de verse en negro se ve en blanco.
+Cambios 22/04/2024
 
-    A ver si le puedes echar un vistazo, porque me da en la punta de la nariz
-    que me está fallando algo de lo básico.
+El ejercicio 12 está libre para que se puedan añadir y jugar con el numero de componentes que quieras.
 
-    En fin, que no te he dicho lo que hace el código: el bicho coge un modelo
-    de árbol y una textura que he metido en la carpeta de static. Dentro del
-    código se crea un plano y un material y se intenta meter la textura uv
-    para que luego el modelo salga coloreado.
+El ejercicio 13 ya lo he retocado yo, y he añadido lo siguiente:
+    - A diferencia del ejercicio del profesor, se mueve con las teclas de direccion y salta pulsando espacio. Pero no es un moviemiento al uso, si no que aplica una fuerza constante en funcion de como pulses.
+    - Si pulsas R, se reinicia la escena.
+    - No atraviesa el plano (en realidad no atraviesa la posicion 0)
+    - A PARTIR DE AQUÍ SI TE APETECE AÑADIR ALGO MÁS, AÑADE LO QUE TE PAREZCA
 
-    En el log de Luisito, al parecer me dice que al modelo no se le puede
-    activar la proyección de sombras porque no se pueden establecer las
-    propiedades de un objeto null... interesante. ¿Será que el método
-    no está chupando el modelo? Puede ser...
-
-    Un saludo y perdona las molestias
+Si no tienes tiempo de mejorar el ejercicio 12 no pasa nada, porque con lo que tenemos ya tenemos el 10.

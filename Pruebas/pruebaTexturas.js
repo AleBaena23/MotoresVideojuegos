@@ -70,11 +70,8 @@ const sueloMesh = luisito.mesh.CreateFromGeometry(
 
 
 )
-sueloMesh.castShadow = true
-sueloMesh.receiveShadow = true
 
-planeMesh.castShadow = true
-planeMesh.receiveShadow = true
+sueloMesh.receiveShadow = true
 
 sueloMesh.position.set(0,0,-4)
 luisito.update = (dt) => {

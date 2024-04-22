@@ -62,8 +62,8 @@ const directionalLight = luisito.light.CreateDirectional('white', 5)
 directionalLight.position.set(0, 2, 1)
 
 luisito.update = (dt) => {
-    Fox.rotateY(0.02)
-    Duck.rotateY(0.02)
+    Fox.rotateY(dt)
+    Duck.rotateY(dt)
 
 }
 

@@ -21,6 +21,9 @@ directionalLight.shadow.camera.left = -40
 
 const ball = luisito.createObject()
 
+// Constante de posición de la pelota 
+const ball_position = new THREE.Vector3(-8, 1, 8)
+
 luisito.addComponentToObject(
     ball,
     'mesh',
@@ -39,7 +42,7 @@ luisito.addComponentToObject(
     })
 )
 
-ball.position.set(-8, 1, 8)
+ball.position.set(ball_position.x, ball_position.y, ball_position.z)
 
 const floor = luisito.createObject("floor")
 
@@ -50,6 +53,15 @@ luisito.addComponentToObject(
         new THREE.PlaneGeometry(100,100),
         new THREE.MeshStandardMaterial({color:'darkslategray'})
     )
+)
+
+luisito.addComponentToObject(
+    floor,
+    "rigidbody",
+    luisito.physics.CreateBody({
+        mass: 0,
+        shape: new CANNON.Plane()
+    })
 )
 
 floor.mesh.receiveShadow = true
@@ -75,22 +87,22 @@ luisito.update = (dt) => {
 
     // Salto con la tecla de espacio
     if (input.isKeyPressed(' ') && ball.position.y <= 1) { //La tecla espacio se representa así
-        ballRigidbody.velocity.y = 5;
+        ballRigidbody.velocity.y = 10;
     }
 
     // Reinicio de la escena con la tecla 'r'
     if (input.isKeyPressed('r')) {
-        ball.position.set(-8, 1, 8);
+        ball.position.set(ball_position.x, ball_position.y, ball_position.z);
         ballRigidbody.velocity.set(0, 0, 0);
     }
 
     // Colisión con el suelo
-    if (ball.position.y < 1) {
-        ball.position.y = 1;
-        if (ballRigidbody.velocity.y < 0) {
-            ballRigidbody.velocity.y = 0;
-        }
-    }
+  //if (ball.position.y < 1) {
+  //    ball.position.y = 1;
+  //    if (ballRigidbody.velocity.y < 0) {
+  //        ballRigidbody.velocity.y = 0;
+  //    }
+  //}
 }
 
 luisito.start()

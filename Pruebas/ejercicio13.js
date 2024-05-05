@@ -1,14 +1,8 @@
 import * as THREE from 'three'
 import * as CANNON from 'cannon-es'
 import Luisito from '/src/luisito.js'
-import CannonDebugger from 'cannon-es-debugger'
 
 const luisito = new Luisito()
-
-const cannonDebugger = new CannonDebugger(luisito.scene, luisito.world, {
-    color: 'white',
-    scale: 1
-});
 
 luisito.camera.instance.position.set(8,5,40)
 luisito.physics.world.gravity.set(0,-9.81,0)

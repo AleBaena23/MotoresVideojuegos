@@ -8,10 +8,24 @@ export default class Mesh{
     
     }
 
+
+    // Métodos de helpers unidos a meshes
+    CreateArrowHelper(dir, origin, length, hex){
+        const arrowHelper = new THREE.ArrowHelper( dir, origin, length, hex );
+        this.scene.add(arrowHelper)
+        return arrowHelper
+    }
+
     CreateAxesHelper(tamaño){
         const axesHelper = new THREE.AxesHelper(tamaño)
         this.scene.add(axesHelper)
         return axesHelper
+    }
+
+    CreateGridHelper(size, divisions, colorCenterLine, colorGrid){
+        const gridHelper = new THREE.GridHelper(size, divisions, colorCenterLine, colorGrid)
+        this.scene.add(gridHelper)
+        return gridHelper
     }
 
    CreateFromVertices(vertices,color){

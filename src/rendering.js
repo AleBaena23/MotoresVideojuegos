@@ -8,7 +8,7 @@ export default class Renderer {
         this.camera = luisito.camera;
         this.window = luisito.window;
         
-        this.instance = new THREE.WebGLRenderer()
+        this.instance = new THREE.WebGLRenderer({antialias: true})
         this.instance.shadowMap.enabled = true
         document.body.appendChild(this.instance.domElement)
 
@@ -17,7 +17,6 @@ export default class Renderer {
             this.window.height
         )
         this.instance.setPixelRatio(this.window.pixelRatio)
-        
     }
 
     resize(){

@@ -43,17 +43,11 @@ class Luisito{
         this.world = new CANNON.World()
         this.assetManager = new AssetManager(this, this.scene);
         this.physics = new Physics(this);
-    
-        
        
-
-        
         this.logger.info("Pidiendo a Luisito que baje al portal");
         this.logger.info("Luisito abre la puerta, MOTOR INICIALIZADO");
         this.logger.info("Window initialized:", this.window); // Agregar esta línea
         
-        
-
         this.window.addEventListener('resize', (e) => {this.resize(e)})
 
         this.assetManager.addEventListener('ready', (e) => {
@@ -69,8 +63,7 @@ class Luisito{
         //El metodo update
 
         this.update = () => {};
-
-       
+        
     }
 
     createObject() {

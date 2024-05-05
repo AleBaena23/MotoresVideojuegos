@@ -132,7 +132,8 @@ frame(){
         // Llamar a la función de actualización
         this.update(this.dt);
 
-        //Añadir cambios de posicion y rotacion
+        //Añadir cambios de posicion y rotacion (nota, se actualiza el debugger antes de todo para que las mallas no se desvinculen)
+        this.physics.cannonDebugger.update()
 
         for(const object of this.objects){
 
@@ -144,8 +145,9 @@ frame(){
         this.updateMeshPositions();
 
         //Actualizar las fisicas
-
+        
         this.physics.Update(this.dt, this.objects)
+        
 
 
     }

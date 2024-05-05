@@ -1,4 +1,5 @@
 import * as CANNON from 'cannon-es'
+import CannonDebugger from 'cannon-es-debugger'
 
 export default class Physics{
 
@@ -7,19 +8,20 @@ export default class Physics{
         this.scene = luisito.scene
         this.world = new CANNON.World()
         this.logger = luisito.logger
+        this.cannonDebugger = new CannonDebugger(this.scene, this.world, {})
         this.logger.info('Physic constructor called')
 
     }
 
     Update(dt, objects) {
         this.world.step(1/60, dt, 3);
-
         for (const object of objects) {
             if (object.rigidbody) {
                 object.position.copy(object.rigidbody.position)
                 object.quaternion.copy(object.rigidbody.quaternion)
             }
         }
+
     }
 
     CreateBody(options){

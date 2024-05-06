@@ -188,14 +188,10 @@ luisito.update = (dt) => {
         box3.rotation.set(0, 0, 0)
         box3Rigidbody.velocity.set(0 ,0 ,0)
     }
+    
+    const dragForce = luisito.physics.GenerateDrag(2, ball.rigidbody.velocity);
+    ball.rigidbody.applyForce(dragForce);
 
-    // Colisión con el suelo
-  //if (ball.position.y < 1) {
-  //    ball.position.y = 1;
-  //    if (ballRigidbody.velocity.y < 0) {
-  //        ballRigidbody.velocity.y = 0;
-  //    }
-  //}
 }
 
 luisito.start()

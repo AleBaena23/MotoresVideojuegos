@@ -55,4 +55,19 @@ export default class Physics{
 
         return gravitationalForce;
     }
+
+    GenerateDrag (k,objectVelocity){
+        let dragVector = new CANNON.Vec3()
+
+        if(objectVelocity.lengthSquared() > 0){
+            let dragDirection = objectVelocity.clone()
+            dragDirection.normalize()
+            dragDirection = dragDirection.negate()
+
+            const dragMagnitude = k * objectVelocity.lengthSquared()
+
+            dragVector = dragDirection.scale(dragMagnitude)
+        }
+        return dragVector
+    }
 }

@@ -189,6 +189,7 @@ luisito.update = (dt) => {
         box3Rigidbody.velocity.set(0 ,0 ,0)
     }
     
+    
     const dragForce = luisito.physics.GenerateDrag(2, ball.rigidbody.velocity);
     ball.rigidbody.applyForce(dragForce);
 

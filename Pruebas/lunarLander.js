@@ -6,7 +6,7 @@ const luisito = new Luisito()
 
 const world = luisito.physics.world;
 
-// Configurar la gravedad
+// Configurar la gravedad (1.61 default)
 world.gravity.set(0, -1.61, 0);
 
 // Configuración de la cámara cenital
@@ -26,7 +26,8 @@ const directionalLight = luisito.light.CreateDirectional('white', 1)
 
 const cubeSize = 0.2
 const cubeHalfExtents  = new CANNON.Vec3(cubeSize * 0.5, cubeSize * 0.5, cubeSize * 0.5 )
-
+const baseHalfExtents  = new CANNON.Vec3(cubeSize*2, cubeSize * 0.99, cubeSize*9)
+// Creación de la "nave espacial"
 const cube = luisito.createObject()
 
 luisito.addComponentToObject(
@@ -43,23 +44,54 @@ luisito.addComponentToObject(
     'rigidbody',
     luisito.physics.CreateBody({
         mass: 1,
+        angularDamping: 0.96,
         shape: new CANNON.Box(cubeHalfExtents)
     })
 );
 
+// Creación de la base
+const base = luisito.createObject()
+
+luisito.addComponentToObject(
+    base,
+    "mesh",
+    luisito.mesh.CreateFromGeometry(
+        new THREE.BoxGeometry(cubeSize*4, cubeSize, cubeSize*2),
+        new THREE.MeshStandardMaterial({color: "red"})
+    )
+)
+luisito.addComponentToObject(
+    base,
+    'rigidbody',
+    luisito.physics.CreateBody({
+        mass: 0,
+        shape: new CANNON.Box(baseHalfExtents)
+    })
+);
+
+// Posición de la base
+base.position.set(getRandomInt(-6.5, 6.5), getRandomInt(0, -3), 0)
+
+// Método random para generar una posición aleatoria para la ubicación de la base
+function getRandomInt(min, max) {
+    const minCeiled = Math.ceil(min);
+    const maxFloored = Math.floor(max);
+    return Math.floor(Math.random() * (maxFloored - minCeiled) + minCeiled);
+  }
+
 luisito.start()
 
-const MAX_TORQUE = 0.7; // Torque máximo aplicado
-const MAX_ROTATION = Math.PI / 6.5; // Máximo ángulo de rotación permitido (45 grados)
+const MAX_TORQUE = 0.1; // Torque máximo aplicado
+const MAX_ROTATION = 2 * Math.PI; // Máximo ángulo de rotación permitido (45 grados)
 const THRUST_FORCE = 4.5; // Fuerza de empuje hacia arriba
 
-const ANGULAR_DRAG_COEFFICIENT = 0.2; // Coeficiente de arrastre angular
+ // const ANGULAR_DRAG_COEFFICIENT = 0.9; // Coeficiente de arrastre angular
 
 luisito.update = (dt) => {
     const input = luisito.input;
 
     // Calcular el arrastre angular basado en la velocidad angular del objeto
-    const angularDrag = cube.rigidbody.angularVelocity.scale(-ANGULAR_DRAG_COEFFICIENT);
+    // const angularDrag = cube.rigidbody.angularVelocity.scale(-ANGULAR_DRAG_COEFFICIENT);
 
     // Limitar la rotación del cubo
     const clampedRotation = Math.max(-MAX_ROTATION, Math.min(MAX_ROTATION, cube.rigidbody.quaternion.z));
@@ -67,7 +99,7 @@ luisito.update = (dt) => {
 
     // Detener el torque completamente si se presiona la tecla ArrowUp
     if (input.isKeyPressed('ArrowUp')) {
-        cube.rigidbody.angularVelocity.set(0, 0, 0);
+        // cube.rigidbody.angularVelocity.set(0, 0, 0);
         cube.rigidbody.quaternion.setFromEuler(0, 0, 0);
         cube.rigidbody.applyTorque(new CANNON.Vec3(0, 0, 0));
         
@@ -83,16 +115,18 @@ luisito.update = (dt) => {
         // Aplicar la fuerza de empuje al cuerpo del cubo
         cube.rigidbody.applyLocalForce(thrustForceVector, new CANNON.Vec3(0, 0, 0));
         
-    } else {
+    } 
+
         // Aplicar torque solo cuando no se está presionando la tecla ArrowUp
         if (input.isKeyPressed('ArrowLeft')) {
             cube.rigidbody.applyTorque(new CANNON.Vec3(0, 0, MAX_TORQUE));
             // Aplicar el arrastre angular al cuerpo del cubo
-            cube.rigidbody.applyTorque(angularDrag);
-        } else if (input.isKeyPressed('ArrowRight')) {
+            // cube.rigidbody.applyTorque(angularDrag);
+        }
+        if (input.isKeyPressed('ArrowRight')) {
             cube.rigidbody.applyTorque(new CANNON.Vec3(0, 0, -MAX_TORQUE));
             // Aplicar el arrastre angular al cuerpo del cubo
-            cube.rigidbody.applyTorque(angularDrag);
+            // cube.rigidbody.applyTorque(angularDrag);
         }
     }
-}
+

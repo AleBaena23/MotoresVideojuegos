@@ -24,7 +24,7 @@ luisito.camera.instance = camera;
 const ambientLight = luisito.light.CreateAmbient('white',1)
 const directionalLight = luisito.light.CreateDirectional('white', 1)
 
-const cubeSize = 0.5
+const cubeSize = 0.2
 const cubeHalfExtents  = new CANNON.Vec3(cubeSize * 0.5, cubeSize * 0.5, cubeSize * 0.5 )
 
 const cube = luisito.createObject()
@@ -33,7 +33,8 @@ luisito.addComponentToObject(
     cube,
     "mesh",
     luisito.mesh.CreateFromGeometry(
-        new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize),
+        //new THREE.BoxGeometry(cubeSize, cubeSize, cubeSize),
+        new THREE.ConeGeometry(cubeSize, cubeSize*2),
         new THREE.MeshStandardMaterial({color: "blue"})
     )
 )
@@ -48,8 +49,8 @@ luisito.addComponentToObject(
 
 luisito.start()
 
-const MAX_TORQUE = 1.4; // Torque máximo aplicado
-const MAX_ROTATION = Math.PI / 8; // Máximo ángulo de rotación permitido (45 grados)
+const MAX_TORQUE = 0.7; // Torque máximo aplicado
+const MAX_ROTATION = Math.PI / 6.5; // Máximo ángulo de rotación permitido (45 grados)
 const THRUST_FORCE = 4.5; // Fuerza de empuje hacia arriba
 
 const ANGULAR_DRAG_COEFFICIENT = 0.2; // Coeficiente de arrastre angular
@@ -81,6 +82,7 @@ luisito.update = (dt) => {
 
         // Aplicar la fuerza de empuje al cuerpo del cubo
         cube.rigidbody.applyLocalForce(thrustForceVector, new CANNON.Vec3(0, 0, 0));
+        
     } else {
         // Aplicar torque solo cuando no se está presionando la tecla ArrowUp
         if (input.isKeyPressed('ArrowLeft')) {

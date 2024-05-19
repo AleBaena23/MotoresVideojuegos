@@ -191,7 +191,9 @@ luisito.update = (dt) => {
             player.position.set(1000,0,0);
             player = null;
             alert("Has muerto");
+            window.location.reload();
                 }
+               
         }
         
     

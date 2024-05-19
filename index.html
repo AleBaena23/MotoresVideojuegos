@@ -15,6 +15,17 @@
           overflow: hidden;
           font-family: Monospace;
         }
+
+        #vidas-container {
+          position: absolute;
+          top: 100px;
+          left: 100px;
+          color: white;
+          font-size: 190px;
+          background-color: rgba(0, 0, 0, 0.5);
+          padding: 5px 10px;
+          border-radius: 5px;
+        }
       </style>
 </head>
 <body>
@@ -24,9 +35,11 @@
 
     <!-- Contenedor para los botones -->
     <div id="buttons-container"></div>
+    
+    <!-- Contenedor para mostrar las vidas -->
+    <div id="vidas-container">Vidas: <span id="vidas-value">3</span></div>
+
     <script type="module" src="./Pruebas/lunarLander.js"></script>
-
-
     
 </body>
 </html>

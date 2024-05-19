@@ -86,6 +86,18 @@ class Luisito{
         data.objectID = object.id
         object[componentName] = data
     }
+    removeObject(object) {
+        const index = this.objects.indexOf(object);
+        if (index !== -1) {
+            this.objects.splice(index, 1);
+            
+            this.scene.remove(object);
+            if (object.rigidbody) {
+                this.world.removeBody(object.rigidbody);
+            }
+        }
+    }
+    
     
     
 
@@ -146,7 +158,7 @@ frame(){
     }
     this.resize()
     // Renderizar la escena
-    //this.camera.frame()
+    this.camera.resize()
     this.renderer.frame();
 }
 }

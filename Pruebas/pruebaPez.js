@@ -87,69 +87,69 @@ luisito.update = (dt) => {
         mixer.update(dt)
         action.play()
         //Animacion con KEYFRAMES
-        // if (pezContainer.position != null) {
-        //     // Moverse hacia adelante
-        //     if (direction === 1) {
-        //         action.play()
-        //         gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
-        //         gsap.to(pezContainer.position, { 
-        //             duration: duracion, 
-        //             delay: delay, // Añade el retraso constante entre cada animación
-        //             x: limite, // Cambia el destino a 'limite'
+        if (pezContainer.position != null) {
+            // Moverse hacia adelante
+            if (direction === 1) {
+                action.play()
+                gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
+                gsap.to(pezContainer.position, { 
+                    duration: duracion, 
+                    delay: delay, // Añade el retraso constante entre cada animación
+                    x: limite, // Cambia el destino a 'limite'
                     
-        //             onComplete: () => { 
-        //                 action.play()
-        //                 // Cambiar dirección y moverse hacia atrás
-        //                 gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
-        //                 direction = -1;
-        //                 gsap.to(pezContainer.position, { 
-        //                     duration: duracion, 
-        //                     delay: delay, // Añade el retraso constante entre cada animación
-        //                     x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
+                    onComplete: () => { 
+                        action.play()
+                        // Cambiar dirección y moverse hacia atrás
+                        gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
+                        direction = -1;
+                        gsap.to(pezContainer.position, { 
+                            duration: duracion, 
+                            delay: delay, // Añade el retraso constante entre cada animación
+                            x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
                             
-        //                 });
-        //             }
-        //         });
-        //     } 
-        //     // Moverse hacia atrás
-        //     else {
-        //         action.play()
-        //         gsap.to(pezContainer.position, { 
-        //             duration: duracion, 
-        //             delay: delay, // Añade el retraso constante entre cada animación
-        //             x: -limite, // Cambia el destino a '-limite'
+                        });
+                    }
+                });
+            } 
+            // Moverse hacia atrás
+            else {
+                action.play()
+                gsap.to(pezContainer.position, { 
+                    duration: duracion, 
+                    delay: delay, // Añade el retraso constante entre cada animación
+                    x: -limite, // Cambia el destino a '-limite'
                     
-        //             onComplete: () => { 
-        //                 action.play()
-        //                 // Cambiar dirección y moverse hacia adelante
-        //                 direction = 1;
-        //                 gsap.to(pezContainer.position, { 
-        //                     duration: duracion, 
-        //                     delay: delay, // Añade el retraso constante entre cada animación
-        //                     x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
+                    onComplete: () => { 
+                        action.play()
+                        // Cambiar dirección y moverse hacia adelante
+                        direction = 1;
+                        gsap.to(pezContainer.position, { 
+                            duration: duracion, 
+                            delay: delay, // Añade el retraso constante entre cada animación
+                            x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
                             
-        //                 });
-        //             }
-        //         });
-        //     }
-        // }
-
-        //Animacion teclado
-        if (pezContainer && pezContainer.rigidbody) {
-            if (input.isKeyPressed('ArrowLeft')) {
-                pezContainer.rigidbody.velocity.x -= 0.1;
-                if(pezContainer.rotation.y != -Math.PI/2)
-                pezContainer.rotateY(-Math.PI/2)
+                        });
+                    }
+                });
             }
-            if (input.isKeyPressed('ArrowRight')) {
-                pezContainer.rigidbody.velocity.x += 0.1;
-                if(pezContainer.rotation.y != +Math.PI/2)
-                    pezContainer.rotateY(+Math.PI/2)
-            }
-            const dragForce = luisito.physics.GenerateDrag(0.2, pezContainer.rigidbody.velocity);
-            pezContainer.rigidbody.applyForce(dragForce);
-            
         }
+
+        // //Animacion teclado
+        // if (pezContainer && pezContainer.rigidbody) {
+        //     if (input.isKeyPressed('ArrowLeft')) {
+        //         pezContainer.rigidbody.velocity.x -= 0.1;
+        //         if(pezContainer.rotation.y != -Math.PI/2)
+        //         pezContainer.rotateY(-Math.PI/2)
+        //     }
+        //     if (input.isKeyPressed('ArrowRight')) {
+        //         pezContainer.rigidbody.velocity.x += 0.1;
+        //         if(pezContainer.rotation.y != +Math.PI/2)
+        //             pezContainer.rotateY(+Math.PI/2)
+        //     }
+        //     const dragForce = luisito.physics.GenerateDrag(0.2, pezContainer.rigidbody.velocity);
+        //     pezContainer.rigidbody.applyForce(dragForce);
+            
+        // }
         
         // pezContainer.rotateY(dt)
     }

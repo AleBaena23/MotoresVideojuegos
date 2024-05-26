@@ -76,6 +76,11 @@ class Luisito{
     getObjects() {
         return this.objects
     }
+    addObject(object){
+        this.objects.push(object);
+        return this.objects
+
+    }
 
     getObjectById(id){
         return this.objects.find(

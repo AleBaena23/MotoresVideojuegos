@@ -44,11 +44,23 @@ luisito.onAssetsLoaded = (e) => {
     pezModel.scale.set(3, 3, 3);
     pezModel.position.set(0, -1, 0);
     pezModel.rotateY(180);
-    luisito.scene.add(pezModel)
+    // Utiliza uno de los objetos de la escena como contenedor
+    const pezContainer = luisito.createObject();
+    pezContainer.add(pezModel);
+    luisito.scene.add(pezContainer);
+    //ESTO ES CLAVE, PORQUE DE ESTA FORMA SE LE PUEDE AÑADIR RIGIDBODY AL MODELO
     mixer = new THREE.AnimationMixer(luisito.assets.get('Pez').scene);
     action = mixer.clipAction(luisito.assets.get('Pez').animations[0]);
     console.log(action);
 };
+
+// // 3. Establecer la posición y rotación del modelo dentro del objeto
+// pezObject.position.set(0, -1, 0); // Por ejemplo, establecer la posición
+// pezObject.rotation.set(0, Math.PI, 0); // Por ejemplo, establecer la rotación
+
+// luisito.scene.add(pezObject); // 4. Añadir el objeto al escenario
+
+
 const limite = 18;
 let currentPosition = -limite; // Iniciar en el límite inferior
 let direction = 1; // 1 para moverse hacia adelante, -1 para moverse hacia atrás
@@ -68,7 +80,7 @@ luisito.update = (dt) => {
             // Moverse hacia adelante
             if (direction === 1) {
                 action.play()
-                gsap.to(pezModel.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });
+                gsap.to(pezModel.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
                 gsap.to(pezModel.position, { 
                     duration: duracion, 
                     delay: delay, // Añade el retraso constante entre cada animación
@@ -77,12 +89,12 @@ luisito.update = (dt) => {
                     onComplete: () => { 
                         action.play()
                         // Cambiar dirección y moverse hacia atrás
-                        gsap.to(pezModel.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });
+                        gsap.to(pezModel.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
                         direction = -1;
                         gsap.to(pezModel.position, { 
                             duration: duracion, 
                             delay: delay, // Añade el retraso constante entre cada animación
-                            x: -limite, // Cambia el destino a '-limite'
+                            x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
                             
                         });
                     }
@@ -103,7 +115,7 @@ luisito.update = (dt) => {
                         gsap.to(pezModel.position, { 
                             duration: duracion, 
                             delay: delay, // Añade el retraso constante entre cada animación
-                            x: limite, // Cambia el destino a 'limite'
+                            x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
                             
                         });
                     }

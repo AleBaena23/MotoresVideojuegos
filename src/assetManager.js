@@ -23,6 +23,7 @@ export default class AssetManager extends THREE.EventDispatcher
 
         this.loaders = {};
         this.loaders.GLTFLoader = new GLTFLoader();
+        
         this.loaders.textureLoader = new THREE.TextureLoader();
     }
 

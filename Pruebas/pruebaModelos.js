@@ -8,12 +8,12 @@ luisito.camera.instance.position.set(0,1,5)
 const gltfLoader = new GLTFLoader()
 
 gltfLoader.load(
-    'static/models/Fox/Fox.gltf',
+    'static/models/Pez/Pez.glb',
     (gltf) => {
 
         console.log("success")
         console.log(gltf)
-        gltf.scene.scale.set(0.025, 0.025, 0.025)
+        gltf.scene.scale.set(1, 1, 1)
         luisito.scene.add(gltf.scene)
         
     }

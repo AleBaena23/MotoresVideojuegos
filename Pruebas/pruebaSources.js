@@ -12,32 +12,32 @@
 
 export default[
 
-    //TEXTURAS PARED
-    {
-        name: 'colorTexture',
-        type: 'texture',
-        path: 'static/textures/Pared/grey_cartago_02_diff_4k.jpg'
-    },
-    {
-        name: 'aoTexture',
-        type: 'texture',
-        path: 'static/textures/Pared/grey_cartago_02_ao_4k.jpg'
-    },
-    {
-        name: 'normalTexture',
-        type: 'texture',
-        path: 'static/textures/Pared/grey_cartago_02_nor_gl_4k.jpg'
-    },
-    {
-        name: 'metalTexture',
-        type: 'texture',
-        path: 'static/textures/Pared/grey_cartago_02_arm_4k.jpg'
-    },
-    {
-        name: 'roughTexture',
-        type: 'texture',
-        path: 'static/textures/Pared/grey_cartago_02_rough_4k.jpg'
-    },
+    // //TEXTURAS PARED
+    // {
+    //     name: 'colorTexture',
+    //     type: 'texture',
+    //     path: 'static/textures/Pared/grey_cartago_02_diff_4k.jpg'
+    // },
+    // {
+    //     name: 'aoTexture',
+    //     type: 'texture',
+    //     path: 'static/textures/Pared/grey_cartago_02_ao_4k.jpg'
+    // },
+    // {
+    //     name: 'normalTexture',
+    //     type: 'texture',
+    //     path: 'static/textures/Pared/grey_cartago_02_nor_gl_4k.jpg'
+    // },
+    // {
+    //     name: 'metalTexture',
+    //     type: 'texture',
+    //     path: 'static/textures/Pared/grey_cartago_02_arm_4k.jpg'
+    // },
+    // {
+    //     name: 'roughTexture',
+    //     type: 'texture',
+    //     path: 'static/textures/Pared/grey_cartago_02_rough_4k.jpg'
+    // },
     //Modelos
     {
         name: 'foxModel',
@@ -53,6 +53,11 @@ export default[
         name: 'Chair',
         type: 'gltfModel',
         path: 'static/models/Chair/Chair.gltf'
+    },
+    {
+        name: 'Pez',
+        type: 'gltfModel',
+        path: 'static/models/Pez/Pez.gltf'
     }
    
 ]

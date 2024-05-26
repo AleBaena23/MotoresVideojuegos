@@ -1,48 +1,35 @@
-import * as THREE from 'three'
+import * as THREE from 'three';
 
-export default class Camera{
+export default class Camera {
 
-    constructor(luisito){
+    constructor(luisito) {
+        this.window = luisito.window;
+        this.scene = luisito.scene;
 
-        this.window = luisito.window
-        this.scene = luisito.scene
+        const aspect = this.window.width / this.window.height;
+        const frustumSize = 20; // Puedes ajustar este valor según tus necesidades
 
-        this.instance = new THREE.PerspectiveCamera(   
-            45, this.window.width / this.window.height, 1, 1000 
-        )
-        
-        this.instance.position.set(0,0,0)
-        this.scene.add(this.instance)
-    }
-
-    /* Método para crear una cámara de perspectiva personalizada (WORK IN PROGRESS)
-    createPerspectiveCamera(fov, aspect, nearFrustrum, farFrustrum){
-        
-        const camera = new THREE.PerspectiveCamera(   
-            fov, aspect, nearFrustrum, farFrustrum 
-        )
-
-        camera.position.set(0,0,0)
-        this.scene.add(camera)
-        return camera
-    }
-    */
-
-    /* Método para crear una cámara ortográfica personalizada (WORK IN PROGRESS)
-    createOrthographicCamera(leftFrustrum, rightFrustrum, topFrustrum, bottomFrustrum, nearFrustrum, farFrustrum){
-        
-        const camera = new THREE.OrthographicCamera( 
-            leftFrustrum, rightFrustrum, topFrustrum, bottomFrustrum, nearFrustrum, farFrustrum 
+        this.instance = new THREE.OrthographicCamera(
+            frustumSize * aspect / -2,
+            frustumSize * aspect / 2,
+            frustumSize / 2,
+            frustumSize / -2,
+            1,
+            1000
         );
 
-        camera.position.set(0,0,0)
-        this.scene.add(camera)
-        return camera
+        this.instance.position.set(0, 0, 10); // Ajusta la posición según tus necesidades
+        this.scene.add(this.instance);
     }
-    */
 
-    resize(){
-        this.instance.aspect = this.window.aspectRatio
-        this.instance.updateProjectionMatrix()
+    resize() {
+        const aspect = this.window.width / this.window.height;
+        const frustumSize = 20; // Asegúrate de que coincida con el valor usado en el constructor
+
+        this.instance.left = frustumSize * aspect / -2;
+        this.instance.right = frustumSize * aspect / 2;
+        this.instance.top = frustumSize / 2;
+        this.instance.bottom = frustumSize / -2;
+        this.instance.updateProjectionMatrix();
     }
 }

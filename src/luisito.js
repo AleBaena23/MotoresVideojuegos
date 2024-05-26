@@ -41,7 +41,7 @@ class Luisito{
 
         this.mesh = new Mesh(this)
         this.world = new CANNON.World()
-        this.assetManager = new AssetManager(this, this.scene);
+        this.assets = new AssetManager(this, this.scene);
         this.physics = new Physics(this);
        
         this.logger.info("Pidiendo a Luisito que baje al portal");
@@ -50,7 +50,7 @@ class Luisito{
         
         this.window.addEventListener('resize', (e) => {this.resize(e)})
 
-        this.assetManager.addEventListener('ready', (e) => {
+        this.assets.addEventListener('ready', (e) => {
             this.logger.info("Successfully loaded " + e.totalAssets + " assets.")
             this.onAssetsLoaded(e)
         })

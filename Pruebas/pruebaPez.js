@@ -4,11 +4,15 @@ import gsap from 'gsap'; //para poder hacer keyframes
 import Luisito from '/src/luisito.js';
 import sources from './pruebaSources.js';
 
+
+//ESTA PARTE ES EL SETUP, EN TODOS LOS EJERCICIOS ES CASI IGUAL
+
+//--------------------------------------------------------
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
 const world = luisito.physics.world; //crea un nuevo mundo de fisicas
 
-// Configurar la gravedad (1.61 default)
+// Configurar la gravedad a 0
 world.gravity.set(0, 0, 0);
 
 const ambientLight = luisito.light.CreateAmbient("white", 1);
@@ -26,6 +30,11 @@ luisito.addComponentToObject(
     )
 )
 floor.position.set(0,0,-10)
+
+//--------------------------------------------------------
+
+//ESTA PARTE ES PARA IMPORTAR EL MODELO Y METERLO EN UN CONTENEDOR VACIO, PARA QUE EL MOTOR LO IDENTIFIQUE COMO UN OBJETO Y SE LE PUEDAN ASOCIAR LOS COMPONENTES
+//----------------------------------------------------------------------------------------------------------------------------
 let pezModel = null;
 let mixer = null;
 let action = null;
@@ -70,6 +79,7 @@ luisito.onAssetsLoaded = (e) => {
     );
 };
 
+//-------------------------------------------------------------------------------------------------------
 
 
 
@@ -81,18 +91,16 @@ let direction = 1; // 1 para moverse hacia adelante, -1 para moverse hacia atrá
 const duracion = 3;
 let delay = 1; // Retraso entre cada animación
 
+
 luisito.update = (dt) => {
-    const input = luisito.input;
-
-    
-
-    
+    const input = luisito.input;   
     if (pezContainer) {
         mixer.update(dt)
         action.play()
 
+        //PRIMERA PARTE DEL TRABAJO, HACER CTRL+K+C HASTA LA SIGUIENTE CADENA DE ---------
+        //----------------------------------------------------------
 
-        
        // Animacion con KEYFRAMES
         //esto lo mueve para la derecha primero y cuando llega al limite vuelve para atras y ademas añade una rotacion al pez si no giraria de espaldas
         if (pezContainer.position != null) {
@@ -141,6 +149,11 @@ luisito.update = (dt) => {
                 });
             }
         }
+        //----------------------------------------------------------------------------------------------------------
+
+        //SEGUNDA PARTE DEL TRABAJO, HACER CTRL+K+U HASTA LA SIGUIENTE CADENA DE ---------
+
+        //----------------------------------------------------
 
         // //Animacion teclado
         // if (pezContainer && pezContainer.rigidbody) {
@@ -160,7 +173,9 @@ luisito.update = (dt) => {
         //    // esto es lo que hace que el pez frene 
             
         // }
-        
+
+         //-------------------------------------------------------------------------------
+         
         // Con CTRL+K+C lo comento
         // Con CTRL+K+U lo descomento
     }

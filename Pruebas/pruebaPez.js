@@ -1,12 +1,12 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import gsap from 'gsap';
+import gsap from 'gsap'; //para poder hacer keyframes
 import Luisito from '/src/luisito.js';
 import sources from './pruebaSources.js';
 
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
-const world = luisito.physics.world;
+const world = luisito.physics.world; //crea un nuevo mundo de fisicas
 
 // Configurar la gravedad (1.61 default)
 world.gravity.set(0, 0, 0);
@@ -14,7 +14,7 @@ world.gravity.set(0, 0, 0);
 const ambientLight = luisito.light.CreateAmbient("white", 1);
 const directionalLight = luisito.light.CreateDirectional("white", 1);
 directionalLight.position.set(5, 3, 3);
-// Creamos un suelo para la simulación
+// Creamos un objeto suelo para la simulación
 const floor = luisito.createObject("floor")
 
 luisito.addComponentToObject(
@@ -47,16 +47,20 @@ luisito.onAssetsLoaded = (e) => {
     pezModel.scale.set(3, 3, 3);
     pezModel.position.set(0, -1, 0);
     pezModel.rotateY(0);
-    // Utiliza uno de los objetos de la escena como contenedor
+    // Utiliza el objeto pezcontainer de la escena como contenedor
     pezContainer.add(pezModel);
     luisito.scene.add(pezContainer);
+
     //ESTO ES CLAVE, PORQUE DE ESTA FORMA SE LE PUEDE AÑADIR RIGIDBODY AL MODELO
+    
     mixer = new THREE.AnimationMixer(luisito.assets.get('Pez').scene);
+    //permite que la animacion se vea por pantalla
     action = mixer.clipAction(luisito.assets.get('Pez').animations[0]);
+    //esta es la animacion que ha hecho Fernando
     console.log(action);
     luisito.addComponentToObject(
         pezContainer,
-        'rigidbody',
+        'rigidbody', //para las fisicas
         luisito.physics.CreateBody({
             mass: 1,
             angularDamping: 0.96,
@@ -86,72 +90,79 @@ luisito.update = (dt) => {
     if (pezContainer) {
         mixer.update(dt)
         action.play()
-        //Animacion con KEYFRAMES
-        if (pezContainer.position != null) {
-            // Moverse hacia adelante
-            if (direction === 1) {
-                action.play()
-                gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
-                gsap.to(pezContainer.position, { 
-                    duration: duracion, 
-                    delay: delay, // Añade el retraso constante entre cada animación
-                    x: limite, // Cambia el destino a 'limite'
-                    
-                    onComplete: () => { 
-                        action.play()
-                        // Cambiar dirección y moverse hacia atrás
-                        gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
-                        direction = -1;
-                        gsap.to(pezContainer.position, { 
-                            duration: duracion, 
-                            delay: delay, // Añade el retraso constante entre cada animación
-                            x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
-                            
-                        });
-                    }
-                });
-            } 
-            // Moverse hacia atrás
-            else {
-                action.play()
-                gsap.to(pezContainer.position, { 
-                    duration: duracion, 
-                    delay: delay, // Añade el retraso constante entre cada animación
-                    x: -limite, // Cambia el destino a '-limite'
-                    
-                    onComplete: () => { 
-                        action.play()
-                        // Cambiar dirección y moverse hacia adelante
-                        direction = 1;
-                        gsap.to(pezContainer.position, { 
-                            duration: duracion, 
-                            delay: delay, // Añade el retraso constante entre cada animación
-                            x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
-                            
-                        });
-                    }
-                });
-            }
-        }
 
-        // //Animacion teclado
-        // if (pezContainer && pezContainer.rigidbody) {
-        //     if (input.isKeyPressed('ArrowLeft')) {
-        //         pezContainer.rigidbody.velocity.x -= 0.1;
-        //         if(pezContainer.rotation.y != -Math.PI/2)
-        //         pezContainer.rotateY(-Math.PI/2)
-        //     }
-        //     if (input.isKeyPressed('ArrowRight')) {
-        //         pezContainer.rigidbody.velocity.x += 0.1;
-        //         if(pezContainer.rotation.y != +Math.PI/2)
-        //             pezContainer.rotateY(+Math.PI/2)
-        //     }
-        //     const dragForce = luisito.physics.GenerateDrag(0.2, pezContainer.rigidbody.velocity);
-        //     pezContainer.rigidbody.applyForce(dragForce);
-            
-        // }
+
         
-        // pezContainer.rotateY(dt)
+    //    // Animacion con KEYFRAMES
+    //     //esto lo mueve para la derecha primero y cuando llega al limite vuelve para atras y ademas añade una rotacion al pez si no giraria de espaldas
+    //     if (pezContainer.position != null) {
+    //         // Moverse hacia adelante
+    //         if (direction === 1) {
+    //             action.play()
+    //             gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
+    //             gsap.to(pezContainer.position, { 
+    //                 duration: duracion, 
+    //                 delay: delay, // Añade el retraso constante entre cada animación
+    //                 x: limite, // Cambia el destino a 'limite'
+                    
+    //                 onComplete: () => { 
+    //                     action.play()
+    //                     // Cambiar dirección y moverse hacia atrás
+    //                     gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
+    //                     direction = -1;
+    //                     gsap.to(pezContainer.position, { 
+    //                         duration: duracion, 
+    //                         delay: delay, // Añade el retraso constante entre cada animación
+    //                         x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
+                            
+    //                     });
+    //                 }
+    //             });
+    //         } 
+    //         // Moverse hacia atrás
+    //         else {
+    //             action.play()
+    //             gsap.to(pezContainer.position, { 
+    //                 duration: duracion, 
+    //                 delay: delay, // Añade el retraso constante entre cada animación
+    //                 x: -limite, // Cambia el destino a '-limite'
+                    
+    //                 onComplete: () => { 
+    //                     action.play()
+    //                     // Cambiar dirección y moverse hacia adelante
+    //                     direction = 1;
+    //                     gsap.to(pezContainer.position, { 
+    //                         duration: duracion, 
+    //                         delay: delay, // Añade el retraso constante entre cada animación
+    //                         x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
+                            
+    //                     });
+    //                 }
+    //             });
+    //         }
+    //     }
+
+        //Animacion teclado
+        if (pezContainer && pezContainer.rigidbody) {
+            if (input.isKeyPressed('ArrowLeft')) {
+                pezContainer.rigidbody.velocity.x -= 0.1;
+               // cuanto mas dejemos presionado la flecha mas rapido va
+                if(pezContainer.rotation.y != -Math.PI/2)
+                pezContainer.rotateY(-Math.PI/2)
+            }
+            if (input.isKeyPressed('ArrowRight')) {
+                pezContainer.rigidbody.velocity.x += 0.1;
+                if(pezContainer.rotation.y != +Math.PI/2)
+                    pezContainer.rotateY(+Math.PI/2)
+            }
+            const dragForce = luisito.physics.GenerateDrag(0.2, pezContainer.rigidbody.velocity);
+            pezContainer.rigidbody.applyForce(dragForce);
+           // esto es lo que hace que el pez frene 
+            
+        }
+        
+        // Con CTRL+K+C lo comento
+        // Con CTRL+K+U lo descomento
     }
 };
 

@@ -1,40 +1,72 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-import gsap from 'gsap'; //para poder hacer keyframes
+import gsap from 'gsap'; // para animaciones
 import Luisito from '/src/luisito.js';
-import sources from './pruebaSources.js';
 
-
-//ESTA PARTE ES EL SETUP, EN TODOS LOS EJERCICIOS ES CASI IGUAL
-
-//--------------------------------------------------------
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
-const world = luisito.physics.world; //crea un nuevo mundo de fisicas
 
-// Configurar la gravedad a 0
-world.gravity.set(0, 0, 0);
+const world = luisito.physics.world;
+world.gravity.set(0, -8, 0);
 
-const ambientLight = luisito.light.CreateAmbient("white", 1);
+const ambientLight = luisito.light.CreateAmbient("white", 3);
 const directionalLight = luisito.light.CreateDirectional("white", 1);
 directionalLight.position.set(5, 3, 3);
-// Creamos un objeto suelo para la simulación
-const floor = luisito.createObject("floor")
 
+const floor = luisito.createObject("floor");
 luisito.addComponentToObject(
     floor,
     'mesh',
     luisito.mesh.CreateFromGeometry(
-        new THREE.PlaneGeometry(100,100),
-        new THREE.MeshStandardMaterial({color:'blue'})
+        new THREE.PlaneGeometry(100, 100),
+        new THREE.MeshStandardMaterial({ color: 'blue' })
     )
-)
-floor.position.set(0,0,-10)
+);
+floor.position.set(0, 0, -10);
 
-//--------------------------------------------------------
+const playerMaterial = new CANNON.Material('playerM');
+const enemyMaterial = new CANNON.Material('enemyM');
 
-//ESTA PARTE ES PARA IMPORTAR EL MODELO Y METERLO EN UN CONTENEDOR VACIO, PARA QUE EL MOTOR LO IDENTIFIQUE COMO UN OBJETO Y SE LE PUEDAN ASOCIAR LOS COMPONENTES
-//----------------------------------------------------------------------------------------------------------------------------
+const enemyPlayerContactMaterial = new CANNON.ContactMaterial(
+    playerMaterial,
+    enemyMaterial,
+    {
+        friction: 0.1,
+        restitution: 0.2
+    }
+);
+world.addContactMaterial(enemyPlayerContactMaterial);
+
+const loadingManager = new THREE.LoadingManager();
+const textureLoader = new THREE.TextureLoader(loadingManager);
+
+loadingManager.onStart = () => {
+    console.log('Loading started');
+};
+loadingManager.onLoad = () => {
+    console.log('Loading finished');
+};
+
+const colorTexture = textureLoader.load('/static/textures/Fondos/Fondo1.jpg');
+const geometry = new THREE.BoxGeometry(1, 1, 0);
+
+geometry.setAttribute(
+    'uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2)
+);
+
+const material = new THREE.MeshStandardMaterial();
+material.map = colorTexture;
+
+const planeMesh1 = luisito.mesh.CreateFromGeometry(geometry, material);
+planeMesh1.scale.set(22, 20, 20);
+planeMesh1.position.set(-12, 0, 0);
+luisito.scene.add(planeMesh1);
+
+const planeMesh2 = luisito.mesh.CreateFromGeometry(geometry, material);
+planeMesh2.scale.set(22, 20, 20);
+planeMesh2.position.set(10, 0, 0);
+luisito.scene.add(planeMesh2);
+
 let pezModel = null;
 let mixer = null;
 let action = null;
@@ -47,138 +79,177 @@ luisito.assets.loadAssets([
         path: 'static/models/Pez/Pez2.glb'
     }
 ]);
-const cubeHalfExtents  = new CANNON.Vec3(1,1,1)
-let pezContainer = luisito.createObject(); // Asignar el objeto a pezContainer
 
+const cubeHalfExtents = new CANNON.Vec3(1, 1, 1);
+let player = luisito.createObject();
 
-luisito.onAssetsLoaded = (e) => {
+luisito.onAssetsLoaded = () => {
     pezModel = luisito.assets.get('Pez').scene;
-    pezModel.scale.set(3, 3, 3);
+    pezModel.scale.set(1, 1, 1);
     pezModel.position.set(0, -1, 0);
-    pezModel.rotateY(0);
-    // Utiliza el objeto pezcontainer de la escena como contenedor
-    pezContainer.add(pezModel);
-    luisito.scene.add(pezContainer);
+    pezModel.rotateY(90);
 
-    //ESTO ES CLAVE, PORQUE DE ESTA FORMA SE LE PUEDE AÑADIR RIGIDBODY AL MODELO
-    
+    player.add(pezModel);
+    luisito.scene.add(player);
+
     mixer = new THREE.AnimationMixer(luisito.assets.get('Pez').scene);
-    //permite que la animacion se vea por pantalla
     action = mixer.clipAction(luisito.assets.get('Pez').animations[0]);
-    //esta es la animacion que ha hecho Fernando
-    console.log(action);
+
     luisito.addComponentToObject(
-        pezContainer,
-        'rigidbody', //para las fisicas
+        player,
+        'rigidbody',
         luisito.physics.CreateBody({
             mass: 1,
             angularDamping: 0.96,
             shape: new CANNON.Box(cubeHalfExtents),
-            
+            material: playerMaterial,
+            // Bloquear rotación
+            angularFactor: new CANNON.Vec3(0, 0, 0),
+            angularVelocity: new CANNON.Vec3(0, 0, 0)
         })
     );
+    
 };
 
-//-------------------------------------------------------------------------------------------------------
+const THRUST_FORCE = 4.5;
+const MAX_VERTICAL_SPEED = THRUST_FORCE * 1.5;
+const UPPER_LIMIT = 9;
+const LOWER_LIMIT = -9;
+const PIPE_UPPER_LIMIT = 11;
+const PIPE_LOWER_LIMIT = -11;
+const MIN_PIPE_DISTANCE = 3;
+const MAX_PIPE_DISTANCE = 7;
+let pulsando = false;
+const pipes = [];
+const PIPE_INTERVAL = 1.5;
+const PIPE_SPEED = 6;
+let lastPipeCenter = 0;
 
+const createPipe = () => {
+    let pipeHeight;
+    let pipeCenter;
+    do {
+        pipeHeight = Math.random() * (PIPE_UPPER_LIMIT - PIPE_LOWER_LIMIT - 5) + 3;
+        pipeCenter = PIPE_LOWER_LIMIT + pipeHeight / 2;
+    } while (Math.abs(pipeCenter - lastPipeCenter) > MAX_PIPE_DISTANCE || Math.abs(pipeCenter - lastPipeCenter) < MIN_PIPE_DISTANCE);
 
+    lastPipeCenter = pipeCenter;
 
+    const gap = 5;
 
-const limite = 18;
-let currentPosition = -limite; // Iniciar en el límite inferior
-let direction = 1; // 1 para moverse hacia adelante, -1 para moverse hacia atrás
+    const pipeTop = luisito.createObject();
+    const pipeBottom = luisito.createObject();
 
-const duracion = 3;
-let delay = 1; // Retraso entre cada animación
+    const pipeTopHeight = PIPE_UPPER_LIMIT - gap / 2;
+    const pipeBottomHeight = pipeHeight - gap / 2;
 
+    const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 2);
+    const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 2);
+    const material = new THREE.MeshStandardMaterial({ color: 'green' });
 
-luisito.update = (dt) => {
-    const input = luisito.input;   
-    if (pezContainer) {
-        mixer.update(dt)
-        action.play()
+    const meshTop = new THREE.Mesh(geometryTop, material);
+    const meshBottom = new THREE.Mesh(geometryBottom, material);
 
-        //PRIMERA PARTE DEL TRABAJO, HACER CTRL+K+C HASTA LA SIGUIENTE CADENA DE ---------
-        //----------------------------------------------------------
+    pipeTop.add(meshTop);
+    pipeBottom.add(meshBottom);
 
-       // Animacion con KEYFRAMES
-        //esto lo mueve para la derecha primero y cuando llega al limite vuelve para atras y ademas añade una rotacion al pez si no giraria de espaldas
-        if (pezContainer.position != null) {
-            // Moverse hacia adelante
-            if (direction === 1) {
-                action.play()
-                gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: +Math.PI/2 });//Gira al final
-                gsap.to(pezContainer.position, { 
-                    duration: duracion, 
-                    delay: delay, // Añade el retraso constante entre cada animación
-                    x: limite, // Cambia el destino a 'limite'
-                    
-                    onComplete: () => { 
-                        action.play()
-                        // Cambiar dirección y moverse hacia atrás
-                        gsap.to(pezContainer.rotation, { duration: 0.5, delay: 0, y: -Math.PI/2 });//Gira al final
-                        direction = -1;
-                        gsap.to(pezContainer.position, { 
-                            duration: duracion, 
-                            delay: delay, // Añade el retraso constante entre cada animación
-                            x: -limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
-                            
-                        });
-                    }
-                });
-            } 
-            // Moverse hacia atrás
-            else {
-                action.play()
-                gsap.to(pezContainer.position, { 
-                    duration: duracion, 
-                    delay: delay, // Añade el retraso constante entre cada animación
-                    x: -limite, // Cambia el destino a '-limite'
-                    
-                    onComplete: () => { 
-                        action.play()
-                        // Cambiar dirección y moverse hacia adelante
-                        direction = 1;
-                        gsap.to(pezContainer.position, { 
-                            duration: duracion, 
-                            delay: delay, // Añade el retraso constante entre cada animación
-                            x: limite, // Esto es que llega a la posicion x = 0 y se activa la siguienta animacion
-                            
-                        });
-                    }
-                });
-            }
+    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 2 / 2));
+    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 2 / 2));
+
+    const bodyTop = new CANNON.Body({
+        mass: 0,
+        material: enemyMaterial,
+        shape: shapeTop,
+        position: new CANNON.Vec3(10, PIPE_UPPER_LIMIT - (PIPE_UPPER_LIMIT - pipeHeight) / 2, 0)
+    });
+
+    const bodyBottom = new CANNON.Body({
+        mass: 0,
+        material: enemyMaterial,
+        shape: shapeBottom,
+        position: new CANNON.Vec3(10, PIPE_LOWER_LIMIT + pipeHeight / 2, 0)
+    });
+
+    pipeTop.rigidbody = bodyTop;
+    pipeBottom.rigidbody = bodyBottom;
+
+    world.addBody(bodyTop);
+    world.addBody(bodyBottom);
+
+    luisito.scene.add(pipeTop);
+    luisito.scene.add(pipeBottom);
+
+    pipes.push(pipeTop, pipeBottom);
+};
+
+const spawnPipes = () => {
+    createPipe();
+    setTimeout(spawnPipes, PIPE_INTERVAL * 1000);
+};
+
+const updatePipes = (dt) => {
+    for (let i = pipes.length - 1; i >= 0; i--) {
+        const pipe = pipes[i];
+        const body = pipe.rigidbody;
+
+        body.position.x -= PIPE_SPEED * dt;
+
+        if (body.position.x < -22) {
+            luisito.scene.remove(pipe);
+            world.removeBody(body);
+            pipes.splice(i, 1);
         }
-        //----------------------------------------------------------------------------------------------------------
 
-        //SEGUNDA PARTE DEL TRABAJO, HACER CTRL+K+U HASTA LA SIGUIENTE CADENA DE ---------
-
-        //----------------------------------------------------
-
-        // //Animacion teclado
-        // if (pezContainer && pezContainer.rigidbody) {
-        //     if (input.isKeyPressed('ArrowLeft')) {
-        //         pezContainer.rigidbody.velocity.x -= 0.1;
-        //        // cuanto mas dejemos presionado la flecha mas rapido va
-        //         if(pezContainer.rotation.y != -Math.PI/2)
-        //         pezContainer.rotateY(-Math.PI/2)
-        //     }
-        //     if (input.isKeyPressed('ArrowRight')) {
-        //         pezContainer.rigidbody.velocity.x += 0.1;
-        //         if(pezContainer.rotation.y != +Math.PI/2)
-        //             pezContainer.rotateY(+Math.PI/2)
-        //     }
-        //     const dragForce = luisito.physics.GenerateDrag(0.2, pezContainer.rigidbody.velocity);
-        //     pezContainer.rigidbody.applyForce(dragForce);
-        //    // esto es lo que hace que el pez frene 
-            
-        // }
-
-         //-------------------------------------------------------------------------------
-         
-        // Con CTRL+K+C lo comento
-        // Con CTRL+K+U lo descomento
+        pipe.position.copy(body.position);
+        pipe.quaternion.copy(body.quaternion);
     }
 };
+
+const applyJumpForce = () => {
+    if (player.rigidbody.velocity.y < MAX_VERTICAL_SPEED) {
+        const localUpDirection = new THREE.Vector3(0, 1, 0);
+        const thrustForceVector = new CANNON.Vec3(localUpDirection.x, localUpDirection.y, 0).scale(THRUST_FORCE);
+        player.rigidbody.applyImpulse(thrustForceVector, new CANNON.Vec3(0, 0, 0));
+    }
+};
+
+const checkPositionLimits = () => {
+    const positionY = player.position.y;
+
+    if (positionY > UPPER_LIMIT) {
+        player.position.y = UPPER_LIMIT;
+        player.rigidbody.velocity.y = 0;
+    }
+
+    if (positionY < LOWER_LIMIT) {
+        player.position.y = LOWER_LIMIT;
+        if (!pulsando) {
+            player.rigidbody.velocity.y = 0;
+        }
+    }
+};
+
+luisito.update = (dt) => {
+    const input = luisito.input;
+    if (player) {
+        mixer.update(dt);
+        action.play();
+
+        if (player.rigidbody) {
+            if (input.isKeyPressed('ArrowUp')) {
+                pulsando = true;
+                applyJumpForce();
+            } else {
+                pulsando = false;
+            }
+
+            checkPositionLimits();
+        }
+    }
+
+    updatePipes(dt);
+};
+
+spawnPipes();
 
 luisito.start();

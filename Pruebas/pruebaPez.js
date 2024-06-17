@@ -5,6 +5,7 @@ import Luisito from '/src/luisito.js';
 
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
+// Aquí tendríamos que añadirle el audio a la cámara.
 
 const world = luisito.physics.world;
 world.gravity.set(0, -8, 0);
@@ -79,6 +80,8 @@ luisito.assets.loadAssets([
         path: 'static/models/Pez/Pez2.glb'
     }
 ]);
+
+// Tendríamos que cargar el audio por aquí
 
 const cubeHalfExtents = new CANNON.Vec3(1, 1, 1);
 let player = luisito.createObject();
@@ -220,6 +223,7 @@ const updatePipes = (dt) => {
         if (!pipe.scored && player.position.x > pipe.top.position.x) {
             pipe.scored = true; // Marcamos como puntuado para evitar sumar más de una vez
             score++; // Incrementamos el puntaje
+            // Aquí podríamos reproducir un pequeño sonido de feedback
             scoreElement.textContent = score.toString(); // Actualizamos la UI del puntaje
         }
     }
@@ -259,8 +263,10 @@ luisito.update = (dt) => {
             if (input.isKeyPressed('ArrowUp')) {
                 pulsando = true;
                 applyJumpForce();
+                // Aquí podríamos insertar un audio cuando sube
             } else {
                 pulsando = false;
+                // Aquí podríamos reproducir un audio cuando baja
             }
 
             checkPositionLimits();
@@ -270,6 +276,6 @@ luisito.update = (dt) => {
     updatePipes(dt);
 };
 
-spawnPipes();
+spawnPipes(); // Pregunta, ¿las tuberías despawnean?
 
 luisito.start();

@@ -4,41 +4,27 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Three.js Example</title>
-    <!-- Importa Three.js -->
-    <!--<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>--> <!-- Lo hago así porque de otra forma no funciona -->
-    
-    <!-- Este código permite que la ventana se muestre completamente, sin bordes -->
     <style>
-        /* body {
-          margin: 0;
-          padding: 0;
-          overflow: hidden;
-          font-family: Monospace;
-        }
 
-        #vidas-container {
-          position: absolute;
-          top: 100px;
-          left: 100px;
-          color: white;
-          font-size: 190px;
-          background-color: rgba(0, 0, 0, 0.5);
-          padding: 5px 10px;
-          border-radius: 5px;
-        } */
-      </style>
+        #score-container {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: black;
+            font-size: 24px;
+            font-weight: bold;
+            background-color: rgba(255, 255, 255, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Un div para contener la escena 3D -->
-    <div id="scene-container"></div>
 
-    <!-- Contenedor para los botones -->
-    <div id="buttons-container"></div>
-    
-    
+<div id="score-container">Score: <span id="score">0</span></div>
 
-    <script type="module" src="./Pruebas/pruebaPez.js"></script>
-    
+<script type="module" src="./Pruebas/pruebaPez.js"></script>
+
 </body>
 </html>

@@ -82,6 +82,9 @@ luisito.assets.loadAssets([
 
 const cubeHalfExtents = new CANNON.Vec3(1, 1, 1);
 let player = luisito.createObject();
+player.position.set(-10, 0, 0);
+
+const PIPE_GAP = 7;
 
 luisito.onAssetsLoaded = () => {
     pezModel = luisito.assets.get('Pez').scene;
@@ -108,7 +111,6 @@ luisito.onAssetsLoaded = () => {
             angularVelocity: new CANNON.Vec3(0, 0, 0)
         })
     );
-    
 };
 
 const THRUST_FORCE = 4.5;
@@ -116,7 +118,7 @@ const MAX_VERTICAL_SPEED = THRUST_FORCE * 1.5;
 const UPPER_LIMIT = 9;
 const LOWER_LIMIT = -9;
 const PIPE_UPPER_LIMIT = 11;
-const PIPE_LOWER_LIMIT = -11;
+const PIPE_LOWER_LIMIT = -12;
 const MIN_PIPE_DISTANCE = 3;
 const MAX_PIPE_DISTANCE = 7;
 let pulsando = false;
@@ -124,6 +126,12 @@ const pipes = [];
 const PIPE_INTERVAL = 1.5;
 const PIPE_SPEED = 6;
 let lastPipeCenter = 0;
+
+
+// Variables globales
+let score = 0; // Solo se declara una vez aquí
+
+const scoreElement = document.getElementById('score'); // Elemento en el DOM para mostrar el puntaje
 
 const createPipe = () => {
     let pipeHeight;
@@ -135,7 +143,7 @@ const createPipe = () => {
 
     lastPipeCenter = pipeCenter;
 
-    const gap = 5;
+    const gap = PIPE_GAP;
 
     const pipeTop = luisito.createObject();
     const pipeBottom = luisito.createObject();
@@ -179,7 +187,7 @@ const createPipe = () => {
     luisito.scene.add(pipeTop);
     luisito.scene.add(pipeBottom);
 
-    pipes.push(pipeTop, pipeBottom);
+    pipes.push({ top: pipeTop, bottom: pipeBottom, scored: false }); // Agregamos la propiedad 'scored'
 };
 
 const spawnPipes = () => {
@@ -190,18 +198,30 @@ const spawnPipes = () => {
 const updatePipes = (dt) => {
     for (let i = pipes.length - 1; i >= 0; i--) {
         const pipe = pipes[i];
-        const body = pipe.rigidbody;
+        const bodyTop = pipe.top.rigidbody;
+        const bodyBottom = pipe.bottom.rigidbody;
 
-        body.position.x -= PIPE_SPEED * dt;
+        bodyTop.position.x -= PIPE_SPEED * dt;
+        bodyBottom.position.x -= PIPE_SPEED * dt;
 
-        if (body.position.x < -22) {
-            luisito.scene.remove(pipe);
-            world.removeBody(body);
+        if (bodyTop.position.x < -22) {
+            luisito.scene.remove(pipe.top);
+            world.removeBody(bodyTop);
             pipes.splice(i, 1);
         }
 
-        pipe.position.copy(body.position);
-        pipe.quaternion.copy(body.quaternion);
+        pipe.top.position.copy(bodyTop.position);
+        pipe.top.quaternion.copy(bodyTop.quaternion);
+
+        pipe.bottom.position.copy(bodyBottom.position);
+        pipe.bottom.quaternion.copy(bodyBottom.quaternion);
+
+        // Verificar si el jugador pasa por el centro del tubo
+        if (!pipe.scored && player.position.x > pipe.top.position.x) {
+            pipe.scored = true; // Marcamos como puntuado para evitar sumar más de una vez
+            score++; // Incrementamos el puntaje
+            scoreElement.textContent = score.toString(); // Actualizamos la UI del puntaje
+        }
     }
 };
 

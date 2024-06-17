@@ -6,6 +6,7 @@ import Luisito from '/src/luisito.js';
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
 // Aquí tendríamos que añadirle el audio a la cámara.
+// ¿También algunos controles de audio para que el jugador pueda personalizar su experiencia?
 
 const world = luisito.physics.world;
 world.gravity.set(0, -8, 0);

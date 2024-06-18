@@ -11,7 +11,7 @@ luisito.camera.instance.position.set(0, 0, 20);
 const world = luisito.physics.world;
 world.gravity.set(0, -8, 0);
 
-const ambientLight = luisito.light.CreateAmbient("white", 3);
+const ambientLight = luisito.light.CreateAmbient("white", 2);
 const directionalLight = luisito.light.CreateDirectional("white", 1);
 directionalLight.position.set(5, 3, 3);
 
@@ -49,25 +49,19 @@ loadingManager.onLoad = () => {
     console.log('Loading finished');
 };
 
-const colorTexture = textureLoader.load('/static/textures/Fondos/Fondo1.jpg');
-const geometry = new THREE.BoxGeometry(1, 1, 0);
+const texturePaths = [
+    '/static/textures/Fondos/fondos/fondo 7.png',
+    '/static/textures/Fondos/fondos/fondo 6.png',
+    '/static/textures/Fondos/fondos/fondo 5.png',
+    '/static/textures/Fondos/fondos/fondo 4.png',
+    '/static/textures/Fondos/fondos/fondo 3.png',
+    '/static/textures/Fondos/fondos/fondo 2.png'
+];
 
-geometry.setAttribute(
-    'uv2', new THREE.BufferAttribute(geometry.attributes.uv.array, 2)
-);
+const textures = texturePaths.map(path => textureLoader.load(path));
 
-const material = new THREE.MeshStandardMaterial();
-material.map = colorTexture;
 
-const planeMesh1 = luisito.mesh.CreateFromGeometry(geometry, material);
-planeMesh1.scale.set(22, 20, 20);
-planeMesh1.position.set(-12, 0, 0);
-luisito.scene.add(planeMesh1);
 
-const planeMesh2 = luisito.mesh.CreateFromGeometry(geometry, material);
-planeMesh2.scale.set(22, 20, 20);
-planeMesh2.position.set(10, 0, 0);
-luisito.scene.add(planeMesh2);
 
 let pezModel = null;
 let mixer = null;
@@ -84,7 +78,7 @@ luisito.assets.loadAssets([
 
 // Tendríamos que cargar el audio por aquí
 
-const cubeHalfExtents = new CANNON.Vec3(1, 1, 1);
+const cubeHalfExtents = new CANNON.Vec3(0.8, 0.8, 0.8);
 let player = luisito.createObject();
 player.position.set(-10, 0, 0);
 
@@ -117,6 +111,26 @@ luisito.onAssetsLoaded = () => {
     );
 };
 
+
+const planes = [];
+
+// Asumiendo que textures[0] es el fondo estático '/static/textures/Fondos/fondos/fondo 1.jpg'
+const staticTexture = textureLoader.load('/static/textures/Fondos/fondos/fondo 1.jpg');
+const staticMaterial = new THREE.MeshStandardMaterial({ map: staticTexture, transparent: true });
+const staticPlane = new THREE.Mesh(new THREE.PlaneGeometry(50, 20), staticMaterial);
+staticPlane.position.set(-5, 0, -10); // Posición fija para el fondo estático
+luisito.scene.add(staticPlane);
+
+// Crear los fondos restantes con movimiento
+for (let i = 1; i < textures.length; i++) {
+    const geometry = new THREE.PlaneGeometry(40, 20);
+    const material = new THREE.MeshStandardMaterial({ map: textures[i], transparent: true });
+    const plane = new THREE.Mesh(geometry, material);
+    plane.position.set(i*15 -20, 0, i-10); // Posicionar cada fondo al lado del anterior
+    planes.push(plane);
+    luisito.scene.add(plane);
+}
+
 const THRUST_FORCE = 4.5;
 const MAX_VERTICAL_SPEED = THRUST_FORCE * 1.5;
 const UPPER_LIMIT = 9;
@@ -130,6 +144,7 @@ const pipes = [];
 const PIPE_INTERVAL = 1.5;
 const PIPE_SPEED = 6;
 let lastPipeCenter = 0;
+var tocando = false;
 
 
 // Variables globales
@@ -155,8 +170,8 @@ const createPipe = () => {
     const pipeTopHeight = PIPE_UPPER_LIMIT - gap / 2;
     const pipeBottomHeight = pipeHeight - gap / 2;
 
-    const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 2);
-    const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 2);
+    const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 20);
+    const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 20);
     const material = new THREE.MeshStandardMaterial({ color: 'green' });
 
     const meshTop = new THREE.Mesh(geometryTop, material);
@@ -165,8 +180,8 @@ const createPipe = () => {
     pipeTop.add(meshTop);
     pipeBottom.add(meshBottom);
 
-    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 2 / 2));
-    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 2 / 2));
+    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 1));
+    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 1));
 
     const bodyTop = new CANNON.Body({
         mass: 0,
@@ -183,7 +198,39 @@ const createPipe = () => {
     });
 
     pipeTop.rigidbody = bodyTop;
+    
+    pipeTop.rigidbody.addEventListener("collide", (e) => {
+        
+        if(player != null){
+            
+            if(e.body.material == playerMaterial){
+                tocando = true
+                console.log("está tocando")
+                
+            }
+        }
+            
+        
+        
+        
+    });
     pipeBottom.rigidbody = bodyBottom;
+    pipeBottom.rigidbody.addEventListener("collide", (e) => {
+        
+        if(player != null){
+            
+            if(e.body.material == playerMaterial){
+                tocando = true
+                console.log("está tocando")
+                
+            }
+        }
+            
+        pipeTop.position.z = 10
+        pipeBottom.position.z = 10 
+        
+        
+    });
 
     world.addBody(bodyTop);
     world.addBody(bodyBottom);
@@ -208,9 +255,11 @@ const updatePipes = (dt) => {
         bodyTop.position.x -= PIPE_SPEED * dt;
         bodyBottom.position.x -= PIPE_SPEED * dt;
 
-        if (bodyTop.position.x < -22) {
+        if (bodyTop.position.x < -35) {
             luisito.scene.remove(pipe.top);
             world.removeBody(bodyTop);
+            luisito.scene.remove(pipe.bottom);
+            world.removeBody(bodyBottom);
             pipes.splice(i, 1);
         }
 
@@ -254,8 +303,29 @@ const checkPositionLimits = () => {
     }
 };
 
+var vidas = 1;
+player.position.z = 1
+
+
 luisito.update = (dt) => {
     const input = luisito.input;
+
+    const playerSpeed = 0.01; // Velocidad del jugador (suponiendo)
+
+    // Mover los fondos hacia la izquierda
+    planes.forEach(plane => {
+        plane.position.x -= playerSpeed*3;
+        
+        // Si un plano se mueve más allá del límite izquierdo, lo reposicionamos al final
+        if (plane.position.x < -40) {
+            const lastPlane = planes[planes.length - 1];
+            plane.position.x = lastPlane.position.x + 40;
+            
+            // Rotar los fondos en la lista
+            planes.push(planes.shift());
+        }
+    });
+    luisito.camera.instance.position.x = player.position.x +5;
     if (player) {
         mixer.update(dt);
         action.play();
@@ -273,6 +343,21 @@ luisito.update = (dt) => {
             checkPositionLimits();
         }
     }
+    if(player != null && tocando == true){
+        if (vidas >0){
+            vidas -= 1;
+            tocando = false;
+        }
+        
+        if(vidas == 0){
+            player.position.set(1000,0,0);
+            player = null;
+            alert("Has muerto");
+            window.location.reload();
+                }
+               
+        }
+        
 
     updatePipes(dt);
 };

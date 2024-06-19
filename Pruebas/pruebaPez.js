@@ -28,6 +28,7 @@ floor.position.set(0, 0, -10);
 
 const playerMaterial = new CANNON.Material('playerM');
 const enemyMaterial = new CANNON.Material('enemyM');
+const coinMaterial = new CANNON.Material('coinM');
 
 const enemyPlayerContactMaterial = new CANNON.ContactMaterial(
     playerMaterial,
@@ -37,7 +38,18 @@ const enemyPlayerContactMaterial = new CANNON.ContactMaterial(
         restitution: 0.2
     }
 );
+
+const coinPlayerContactMaterial = new CANNON.ContactMaterial(
+    playerMaterial,
+    coinMaterial,
+    {
+        friction: 0,
+        restitution: 0
+    }
+);
+
 world.addContactMaterial(enemyPlayerContactMaterial);
+world.addContactMaterial(coinPlayerContactMaterial);
 
 const loadingManager = new THREE.LoadingManager();
 const textureLoader = new THREE.TextureLoader(loadingManager);
@@ -51,11 +63,12 @@ loadingManager.onLoad = () => {
 
 const texturePaths = [
     '/static/textures/Fondos/fondos/fondo 7.png',
-    '/static/textures/Fondos/fondos/fondo 6.png',
+    '/static/textures/Fondos/fondos2/fondonuevo2.png',
+    '/static/textures/Fondos/fondos2/fondonuevo1.png',
     '/static/textures/Fondos/fondos/fondo 5.png',
-    '/static/textures/Fondos/fondos/fondo 4.png',
-    '/static/textures/Fondos/fondos/fondo 3.png',
-    '/static/textures/Fondos/fondos/fondo 2.png'
+    '/static/textures/Fondos/fondos2/fondonuevo4.png',
+    '/static/textures/Fondos/fondos2/fondonuevo3.png'
+    
 ];
 
 const textures = texturePaths.map(path => textureLoader.load(path));
@@ -64,6 +77,7 @@ const textures = texturePaths.map(path => textureLoader.load(path));
 
 
 let pezModel = null;
+let coinModel = null;
 let mixer = null;
 let action = null;
 
@@ -73,18 +87,37 @@ luisito.assets.loadAssets([
         name: 'Pez',
         type: 'gltfModel',
         path: 'static/models/Pez/Pez2.glb'
+    },
+
+    {
+        name: 'Coin',
+        type: 'gltfModel',
+        path: 'static/models/Coin/moneda.glb'
     }
 ]);
 
 // Tendríamos que cargar el audio por aquí
 
 const cubeHalfExtents = new CANNON.Vec3(0.8, 0.8, 0.8);
+
+const coinSides = new CANNON.Vec3(0.75, 0.75, 0.75);
+
+
 let player = luisito.createObject();
 player.position.set(-10, 0, 0);
+
+let coin = luisito.createObject();
+coin.position.set(0, 0, 0);
+
+let coins = []; // Array para almacenar las monedas
+
+let tocandoMoneda = false;
 
 const PIPE_GAP = 7;
 
 luisito.onAssetsLoaded = () => {
+
+    //MODELO PEZ QUE SERÁ EL PLAYER
     pezModel = luisito.assets.get('Pez').scene;
     pezModel.scale.set(1, 1, 1);
     pezModel.position.set(0, -1, 0);
@@ -92,6 +125,56 @@ luisito.onAssetsLoaded = () => {
 
     player.add(pezModel);
     luisito.scene.add(player);
+
+
+    //MODELO DE LAS MONEDAS
+
+    coinModel = luisito.assets.get('Coin').scene;
+    coinModel.scale.set(0.5, 0.5, 0.5);
+    coinModel.position.set(0, 0, 0);
+    coinModel.rotateY(180);
+
+    // coin.add(coinModel);
+    
+    // Crear un número fijo de monedas y añadirlas al array
+    for (let i = 0; i < 10; i++) {
+        let coin = luisito.createObject();
+        let coinClone = coinModel.clone();
+        coin.add(coinClone);
+        luisito.addComponentToObject(
+            coin,
+            'rigidbody',
+            luisito.physics.CreateBody({
+                mass: 0,
+                angularDamping: 0.96,
+                shape: new CANNON.Box(cubeHalfExtents),
+                material: coinPlayerContactMaterial,
+                // Bloquear rotación
+                angularFactor: new CANNON.Vec3(0, 0, 0),
+                angularVelocity: new CANNON.Vec3(0, 0, 0)
+            })
+        );
+        coin.rigidbody.addEventListener("collide", (e) => {
+        
+            if(player != null){
+                
+                if(e.body.material == playerMaterial){
+                    tocandoMoneda = true
+                    console.log("está tocando")
+                    
+                }
+            }
+                
+            
+            luisito.scene.remove(coin);
+            world.removeBody(coin);
+            
+            
+        });
+
+        coins.push(coin);
+        luisito.scene.add(coin);
+    }
 
     mixer = new THREE.AnimationMixer(luisito.assets.get('Pez').scene);
     action = mixer.clipAction(luisito.assets.get('Pez').animations[0]);
@@ -102,13 +185,24 @@ luisito.onAssetsLoaded = () => {
         luisito.physics.CreateBody({
             mass: 1,
             angularDamping: 0.96,
-            shape: new CANNON.Box(cubeHalfExtents),
+            shape: new CANNON.Box(coinSides),
             material: playerMaterial,
             // Bloquear rotación
             angularFactor: new CANNON.Vec3(0, 0, 0),
             angularVelocity: new CANNON.Vec3(0, 0, 0)
         })
     );
+     
+    // luisito.addComponentToObject(
+    //     coin,
+    //     'rigidbody',
+    //     luisito.physics.CreateBody({
+    //         mass: 0,
+    //         angularDamping: 0.96,
+    //         shape: new CANNON.Box(cubeHalfExtents),
+    //         material: coinMaterial,
+    //     })
+    // );
 };
 
 
@@ -126,7 +220,7 @@ for (let i = 1; i < textures.length; i++) {
     const geometry = new THREE.PlaneGeometry(40, 20);
     const material = new THREE.MeshStandardMaterial({ map: textures[i], transparent: true });
     const plane = new THREE.Mesh(geometry, material);
-    plane.position.set(i*15 -20, 0, i-10); // Posicionar cada fondo al lado del anterior
+    plane.position.set(i*15 -15, 0, i-10); // Posicionar cada fondo al lado del anterior
     planes.push(plane);
     luisito.scene.add(plane);
 }
@@ -238,6 +332,15 @@ const createPipe = () => {
     luisito.scene.add(pipeTop);
     luisito.scene.add(pipeBottom);
 
+    
+    // Colocar una moneda en una posición aleatoria cerca del centro de la tubería
+    const coin = coins.shift(); // Tomar la primera moneda del array
+    if (coin) {
+        coin.position.set(1, pipeCenter +5, 0); // Colocar la moneda cerca del centro de la tubería
+        coins.push(coin); // Devolver la moneda al final del array para reutilizarla
+    }
+    
+
     pipes.push({ top: pipeTop, bottom: pipeBottom, scored: false }); // Agregamos la propiedad 'scored'
 };
 
@@ -255,6 +358,7 @@ const updatePipes = (dt) => {
         bodyTop.position.x -= PIPE_SPEED * dt;
         bodyBottom.position.x -= PIPE_SPEED * dt;
 
+          
         if (bodyTop.position.x < -35) {
             luisito.scene.remove(pipe.top);
             world.removeBody(bodyTop);
@@ -309,7 +413,12 @@ player.position.z = 1
 
 luisito.update = (dt) => {
     const input = luisito.input;
+    
+    coins.forEach(coin => {
+        coin.position.x -= PIPE_SPEED * dt;
+        coin.rotateY(dt);
 
+    })
     const playerSpeed = 0.01; // Velocidad del jugador (suponiendo)
 
     // Mover los fondos hacia la izquierda
@@ -325,8 +434,11 @@ luisito.update = (dt) => {
             planes.push(planes.shift());
         }
     });
+
     luisito.camera.instance.position.x = player.position.x +5;
-    if (player) {
+
+    if (player != null) {
+
         mixer.update(dt);
         action.play();
 
@@ -357,6 +469,18 @@ luisito.update = (dt) => {
                 }
                
         }
+
+        if(player != null && tocandoMoneda == true){
+            
+            
+            score++; // Incrementamos el puntaje
+            // Aquí podríamos reproducir un pequeño sonido de feedback
+            scoreElement.textContent = score.toString(); // Actualizamos la UI del puntaje
+            tocandoMoneda = false;
+
+            
+                   
+            }
         
 
     updatePipes(dt);

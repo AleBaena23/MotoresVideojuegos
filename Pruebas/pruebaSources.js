@@ -58,6 +58,11 @@ export default[
         name: 'Pez',
         type: 'gltfModel',
         path: 'static/models/Pez/Pez.gltf'
+    },
+    {
+        name: 'Moneda',
+        type: 'gltfModel',
+        path: 'static/models/Coin/moneda.gltf'
     }
    
 ]

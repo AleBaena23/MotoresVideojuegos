@@ -132,7 +132,7 @@ luisito.onAssetsLoaded = () => {
     coinModel = luisito.assets.get('Coin').scene;
     coinModel.scale.set(0.5, 0.5, 0.5);
     coinModel.position.set(0, 0, 0);
-    coinModel.rotateY(180);
+    coinModel.rotateY(90);
 
     // coin.add(coinModel);
     
@@ -141,37 +141,7 @@ luisito.onAssetsLoaded = () => {
         let coin = luisito.createObject();
         let coinClone = coinModel.clone();
         coin.add(coinClone);
-        luisito.addComponentToObject(
-            coin,
-            'rigidbody',
-            luisito.physics.CreateBody({
-                mass: 0,
-                angularDamping: 0.96,
-                shape: new CANNON.Box(cubeHalfExtents),
-                material: coinPlayerContactMaterial,
-                // Bloquear rotación
-                angularFactor: new CANNON.Vec3(0, 0, 0),
-                angularVelocity: new CANNON.Vec3(0, 0, 0)
-            })
-        );
-        coin.rigidbody.addEventListener("collide", (e) => {
-        
-            if(player != null){
-                
-                if(e.body.material == playerMaterial){
-                    tocandoMoneda = true
-                    console.log("está tocando")
-                    
-                }
-            }
-                
-            
-            luisito.scene.remove(coin);
-            world.removeBody(coin);
-            
-            
-        });
-
+      
         coins.push(coin);
         luisito.scene.add(coin);
     }
@@ -193,16 +163,6 @@ luisito.onAssetsLoaded = () => {
         })
     );
      
-    // luisito.addComponentToObject(
-    //     coin,
-    //     'rigidbody',
-    //     luisito.physics.CreateBody({
-    //         mass: 0,
-    //         angularDamping: 0.96,
-    //         shape: new CANNON.Box(cubeHalfExtents),
-    //         material: coinMaterial,
-    //     })
-    // );
 };
 
 
@@ -408,17 +368,39 @@ const checkPositionLimits = () => {
 };
 
 var vidas = 1;
-player.position.z = 1
+player.position.z = 0
 
 
 luisito.update = (dt) => {
     const input = luisito.input;
+    console.log("Posición del jugador:", player.position);
+
+
     
     coins.forEach(coin => {
         coin.position.x -= PIPE_SPEED * dt;
         coin.rotateY(dt);
-
-    })
+        console.log("Posición de la moneda:", coin.position);
+        // Verificar si el jugador está tocando la moneda basándose en la posición
+        if (player.position.distanceTo(coin.position) < 1) { // Ajusta el valor según sea necesario
+            console.log("Tocando moneda");
+            tocandoMoneda = true
+            if(tocandoMoneda){
+                // Incrementar el puntaje y actualizar la interfaz
+            score++;
+            scoreElement.textContent = score.toString();
+            // Marcar que se tocó una moneda (si es necesario para lógica adicional)
+            tocandoMoneda = false;
+            }
+            // Eliminar la moneda de la escena
+            luisito.scene.remove(coin);
+    
+            
+    
+            
+        }
+    });
+    
     const playerSpeed = 0.01; // Velocidad del jugador (suponiendo)
 
     // Mover los fondos hacia la izquierda
@@ -470,22 +452,11 @@ luisito.update = (dt) => {
                
         }
 
-        if(player != null && tocandoMoneda == true){
-            
-            
-            score++; // Incrementamos el puntaje
-            // Aquí podríamos reproducir un pequeño sonido de feedback
-            scoreElement.textContent = score.toString(); // Actualizamos la UI del puntaje
-            tocandoMoneda = false;
-
-            
-                   
-            }
         
 
     updatePipes(dt);
 };
 
 spawnPipes(); // Pregunta, ¿las tuberías despawnean?
-
+world.defaultContactMaterial.contactEquationStiffness = 100
 luisito.start();

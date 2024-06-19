@@ -33,6 +33,7 @@ class Luisito {
         this.world = new CANNON.World();
         this.assets = new AssetManager(this, this.scene);
         this.physics = new Physics(this);
+        this.audio = new Audio(this)
 
         this.logger.info("Pidiendo a Luisito que baje al portal");
         this.logger.info("Luisito abre la puerta, MOTOR INICIALIZADO");

@@ -3,10 +3,20 @@ import * as CANNON from 'cannon-es';
 import gsap from 'gsap'; // para animaciones
 import Luisito from '/src/luisito.js';
 
+/*
+Notas:
+1. Hay que reducir la hitbox del pez para que no sea frustrante la experiencia (las pipes tocan la hitbox por arriba)
+2. Una fuerza de drag para que la bajada del pez no sea tan brusca
+3. Quizás retocar la separación entre las pipes para que no haya casos imposibles (para que no te obligue a perder)
+*/
+
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
-// Aquí tendríamos que añadirle el audio a la cámara.
-// ¿También algunos controles de audio para que el jugador pueda personalizar su experiencia?
+
+// Creamos el audio listener y se lo metemos a la cámara
+const listener = new THREE.AudioListener();
+luisito.camera.instance.add(listener);
+
 
 const world = luisito.physics.world;
 world.gravity.set(0, -8, 0);
@@ -53,6 +63,7 @@ world.addContactMaterial(coinPlayerContactMaterial);
 
 const loadingManager = new THREE.LoadingManager();
 const textureLoader = new THREE.TextureLoader(loadingManager);
+const audioLoader = new THREE.AudioLoader();
 
 loadingManager.onStart = () => {
     console.log('Loading started');
@@ -75,11 +86,13 @@ const textures = texturePaths.map(path => textureLoader.load(path));
 
 
 
-
 let pezModel = null;
 let coinModel = null;
 let mixer = null;
 let action = null;
+
+const sonido_fondo = new THREE.Audio(listener)
+const sonido_burbuja = new THREE.Audio(listener)
 
 luisito.assets.loadAssets([
     // Modelos
@@ -95,8 +108,6 @@ luisito.assets.loadAssets([
         path: 'static/models/Coin/moneda.glb'
     }
 ]);
-
-// Tendríamos que cargar el audio por aquí
 
 const cubeHalfExtents = new CANNON.Vec3(0.8, 0.8, 0.8);
 
@@ -162,6 +173,19 @@ luisito.onAssetsLoaded = () => {
             angularVelocity: new CANNON.Vec3(0, 0, 0)
         })
     );
+
+    // CARGAMOS LOS SONIDOS
+    audioLoader.load( '/static/sounds/beach_party.mp3', function( buffer ) {
+        sonido_fondo.setBuffer( buffer );
+        sonido_fondo.setLoop(true);
+        sonido_fondo.setVolume(0.4);
+        sonido_fondo.play();
+    });
+    
+    audioLoader.load( '/static/sounds/bubble_up.mp3', function( buffer ) {
+        sonido_burbuja.setBuffer( buffer );
+        sonido_burbuja.setVolume(0.8);
+    });
      
 };
 
@@ -429,6 +453,7 @@ luisito.update = (dt) => {
                 pulsando = true;
                 applyJumpForce();
                 // Aquí podríamos insertar un audio cuando sube
+                sonido_burbuja.play();
             } else {
                 pulsando = false;
                 // Aquí podríamos reproducir un audio cuando baja
@@ -446,6 +471,7 @@ luisito.update = (dt) => {
         if(vidas == 0){
             player.position.set(1000,0,0);
             player = null;
+            sonido_fondo.stop();
             alert("Has muerto");
             window.location.reload();
                 }

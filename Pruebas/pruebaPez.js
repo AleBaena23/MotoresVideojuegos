@@ -3,12 +3,9 @@ import * as CANNON from 'cannon-es';
 import gsap from 'gsap'; // para animaciones
 import Luisito from '/src/luisito.js';
 
-/*
-Notas:
-1. Hay que reducir la hitbox del pez para que no sea frustrante la experiencia (las pipes tocan la hitbox por arriba)
-2. Una fuerza de drag para que la bajada del pez no sea tan brusca
-3. Quizás retocar la separación entre las pipes para que no haya casos imposibles (para que no te obligue a perder)
-*/
+//SETUP//
+
+//------------------------------------------------------------
 
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
@@ -36,30 +33,18 @@ luisito.addComponentToObject(
 );
 floor.position.set(0, 0, -10);
 
+//--------------------------------------------------------------------------------------------
+
+//MATERIALES PARA FÍSICA
+
+//--------------------------------------------------------------------------------------------
+
 const playerMaterial = new CANNON.Material('playerM');
 const enemyMaterial = new CANNON.Material('enemyM');
-const coinMaterial = new CANNON.Material('coinM');
+//--------------------------------------------------------------------------------------------
 
-const enemyPlayerContactMaterial = new CANNON.ContactMaterial(
-    playerMaterial,
-    enemyMaterial,
-    {
-        friction: 0.1,
-        restitution: 0.2
-    }
-);
+//MODELOS, CARGAR Y CREAR OBJETOS
 
-const coinPlayerContactMaterial = new CANNON.ContactMaterial(
-    playerMaterial,
-    coinMaterial,
-    {
-        friction: 0,
-        restitution: 0
-    }
-);
-
-world.addContactMaterial(enemyPlayerContactMaterial);
-world.addContactMaterial(coinPlayerContactMaterial);
 
 const loadingManager = new THREE.LoadingManager();
 const textureLoader = new THREE.TextureLoader(loadingManager);
@@ -177,10 +162,6 @@ const initializeCoins = () => {
     
 };
 
-let tocandoMoneda = false;
-
-const PIPE_GAP = 7;
-
 luisito.onAssetsLoaded = () => {
 
     //MODELO PEZ QUE SERÁ EL PLAYER
@@ -290,7 +271,11 @@ for (let i = 1; i < textures.length; i++) {
     planes.push(plane);
     luisito.scene.add(plane);
 }
+//-----------------------------------------------------------------------------------------------------------------------------------------------
 
+//TODO LO RELACIONADO CON LAS TUBERÍAS
+
+const PIPE_GAP = 7;
 const THRUST_FORCE = 4;
 const MAX_VERTICAL_SPEED = THRUST_FORCE * 1.5;
 const UPPER_LIMIT = 9;
@@ -331,16 +316,6 @@ const createPipe = () => {
 
     const pipeTopHeight = PIPE_UPPER_LIMIT - gap / 2;
     const pipeBottomHeight = pipeHeight - gap / 2;
-
-    // const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 20);
-    // const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 20);
-    // const material = new THREE.MeshStandardMaterial({ color: 'green' });
-
-    // const meshTop = new THREE.Mesh(geometryTop, material);
-    // const meshBottom = new THREE.Mesh(geometryBottom, material);
-
-    // pipeTop.add(meshTop);
-    // pipeBottom.add(meshBottom);
 
     let randomNumber = Math.floor(Math.random() * 6) + 1;
 
@@ -516,6 +491,12 @@ const updatePipes = (dt) => {
     }
 };
 
+//-----------------------------------------------------------------------------------------------------------------------------------------------
+
+//MOVIMIENTO DEL JUGADOR
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+
 const applyJumpForce = () => {
     if (player.rigidbody.velocity.y < MAX_VERTICAL_SPEED) {
         const localUpDirection = new THREE.Vector3(0, 1, 0);
@@ -543,10 +524,11 @@ const checkPositionLimits = () => {
 var vidas = 1;
 player.position.z = 0
 
-const calculateDistance = (x1, x2) => {
-    const dx = x2 - x1;
-    return Math.sqrt(dx * dx);
-};
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+
+//METODO UPDATE
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 
 luisito.update = (dt) => {
     const input = luisito.input;
@@ -571,10 +553,7 @@ luisito.update = (dt) => {
     
             // Eliminar la moneda de la escena
             luisito.scene.remove(coin);
-        }
-
-        let distance = calculateDistance(coin.position.x, player.position.x)
-          
+        }          
         if (coin.position.x == player.position.x -35) {
             luisito.scene.remove(coin);
             world.removeBody(coin);
@@ -641,6 +620,15 @@ luisito.update = (dt) => {
 
     updatePipes(dt);
 };
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//PARA EL MENSAJE DE CUANDO PIERDES
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
+
+
 setTimeout(() => {
     spawnPipes(); // Pregunta, ¿las tuberías despawnean?
     // Coloca aquí el código que quieres ejecutar después del retraso
@@ -679,6 +667,8 @@ function showGameOverModal() {
 function handleGameOver() {
   showGameOverModal();
 }
+
+//-------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 world.defaultContactMaterial.contactEquationStiffness = 100

@@ -5,26 +5,107 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Three.js Example</title>
     <style>
+        /* Estilos CSS generales */
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
 
+        /* Estilos para el modal */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: transparent;
+        }
+
+        .modal-content {
+            background-color: transparent;
+            margin: 10% auto;
+            padding: 20px;
+            border: 0px solid #888;
+            width: 100%;
+            text-align: center;
+            border-radius: 10px;
+            position: relative;
+        }
+
+        .modal-image {
+            
+            max-width: 30%;
+            height: auto;
+            margin-bottom: 0;
+        }
+
+        /* .close {
+            color: #aaaaaa;
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover,
+        .close:focus {
+            color: #000;
+            text-decoration: none;
+        } */
+
+        #modal-text {
+            margin-bottom: 20px;
+        }
+
+        #modal-retry-btn {
+            padding: 10px 20px;
+            background-color: #cdc0d6;
+            color: rgb(26, 81, 130);
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        #modal-retry-btn:hover {
+            background-color: #45a049;
+        }
+
+        /* Estilos para el contenedor del puntaje */
         #score-container {
             position: absolute;
             top: 20px;
             left: 20px;
             color: black;
-            font-size: 24px;
+            font-size: 40px;
             font-weight: bold;
-            background-color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(107, 164, 229, 0.7);
             padding: 10px;
             border-radius: 5px;
         }
     </style>
 </head>
 <body>
+    <!-- Modal -->
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <img id="modal-image" class="modal-image" src="static/UI/you loose.png" alt="Imagen de alerta">
+            <!-- <p id="modal-text">¡Has perdido! ¿Quieres volver a intentarlo?</p> -->
+            <button id="modal-retry-btn">Reintentar</button>
+        </div>
+    </div>
 
+    <!-- Contenedor del puntaje -->
+    <div id="score-container">Score: <span id="score">0</span></div>
 
-<div id="score-container">Score: <span id="score">0</span></div>
-
-<script type="module" src="./Pruebas/pruebaPez.js"></script>
-
+    <!-- Script para la lógica de juego con Three.js -->
+    <script type="module" src="./Pruebas/pruebaPez.js"></script>
 </body>
 </html>

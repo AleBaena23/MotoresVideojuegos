@@ -629,8 +629,10 @@ luisito.update = (dt) => {
             luisito.scene.remove(player);
             player = null;
             sonido_fondo.stop();
-            alert("Has muerto");
-            window.location.reload();
+            // alert("Has muerto");
+            // window.location.reload();
+
+            handleGameOver(); // 
                 }
                
         }
@@ -644,6 +646,40 @@ setTimeout(() => {
     // Coloca aquí el código que quieres ejecutar después del retraso
     console.log("Se ha ejecutado después del retraso.");
 }, 1000); // 1000 milisegundos = 1 segundo
+
+
+// Obtener el modal y los elementos relacionados
+const modal = document.getElementById("myModal");
+const modalText = document.getElementById("modal-text");
+const modalRetryBtn = document.getElementById("modal-retry-btn");
+
+// Función para mostrar el modal con un mensaje específico
+function showModal(message) {
+  modal.style.display = "block";
+  modalText.textContent = message;
+}
+
+// Cuando el usuario haga clic en el botón de reintentar, recargar la página
+modalRetryBtn.addEventListener("click", function() {
+  window.location.reload();
+});
+
+// Cerrar el modal cuando el usuario haga clic en la 'x'
+const closeBtn = document.getElementsByClassName("close")[0];
+closeBtn.addEventListener("click", function() {
+  modal.style.display = "none";
+});
+
+// Mostrar el modal cuando el jugador muere
+function showGameOverModal() {
+  showModal("¡Has perdido! ¿Quieres volver a intentarlo?");
+}
+
+// Llamar a la función para mostrar el modal cuando el jugador muere
+function handleGameOver() {
+  showGameOverModal();
+}
+
 
 world.defaultContactMaterial.contactEquationStiffness = 100
 luisito.start();

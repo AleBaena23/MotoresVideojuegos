@@ -115,22 +115,22 @@ luisito.assets.loadAssets([
     {
         name: 'Coral1',
         type: 'gltfModel',
-        path: 'static/models/Corales/Coral1.glb'
+        path: 'static/models/Corales/Coral1_morado.glb'
     },
     {
         name: 'Coral2',
         type: 'gltfModel',
-        path: 'static/models/Corales/Coral2.glb'
+        path: 'static/models/Corales/Coral2_verde.glb'
     },
     {
         name: 'Coral3',
         type: 'gltfModel',
-        path: 'static/models/Corales/Coral3.glb'
+        path: 'static/models/Corales/Coral3_rojo.glb'
     },
     {
         name: 'Escudo',
         type: 'gltfModel',
-        path: 'static/models/Corales/Coral3.glb'
+        path: 'static/models/PowerUps/escudo.glb'
     }
 
 
@@ -152,14 +152,26 @@ let coins = []; // Array para almacenar las monedas
 // Función para crear un número fijo de monedas y añadirlas al array
 const initializeCoins = () => {
     coins = []; // Reiniciar la lista de monedas
-    if(coinModel){
+    if(coinModel || escudoModel){
         for (let i = 0; i < 10; i++) {
-            let coin = luisito.createObject();
+            let randomNumber = Math.floor(Math.random() * 15) + 1;
+            if(randomNumber != 14){
+                let coin = luisito.createObject();
             let coinClone = coinModel.clone();
             coin.add(coinClone);
             coins.push(coin);
             coin.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
             luisito.scene.add(coin);
+            }
+            else{
+                let escudo = luisito.createObject();
+            let escudoClone = escudoModel.clone();
+            escudo.add(escudoClone);
+            coins.push(escudo);
+            escudo.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
+            luisito.scene.add(escudo);
+            }
+            
         }
     }
     
@@ -211,6 +223,10 @@ luisito.onAssetsLoaded = () => {
 
     //MODELOS POWERUPS
 
+    escudoModel = luisito.assets.get('Escudo').scene;
+    escudoModel.scale.set(1,1,1);
+    escudoModel.position.set(0, 0, 0);
+    escudoModel.rotateY(0);
     
      // Crear un número fijo de monedas y añadirlas al array
      for (let i = 0; i < 100; i++) {
@@ -326,7 +342,7 @@ const createPipe = () => {
     // pipeTop.add(meshTop);
     // pipeBottom.add(meshBottom);
 
-    let randomNumber = Math.floor(Math.random() * 3) + 1;
+    let randomNumber = Math.floor(Math.random() * 6) + 1;
 
 
     // Clonación y ajuste de los corales
@@ -348,7 +364,7 @@ const createPipe = () => {
         coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
         pipeTop.add(coralTopClone);
 
-        const coralBottomClone = coralModel1.clone();
+        const coralBottomClone = coralModel2.clone();
         coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
         coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
         pipeBottom.add(coralBottomClone);
@@ -359,7 +375,40 @@ const createPipe = () => {
         coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
         pipeTop.add(coralTopClone);
 
+        const coralBottomClone = coralModel3.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        if(randomNumber == 4){
+            const coralTopClone = coralModel3.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
+        const coralBottomClone = coralModel2.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        if(randomNumber == 5){
+            const coralTopClone = coralModel2.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
         const coralBottomClone = coralModel1.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        if(randomNumber == 6){
+            const coralTopClone = coralModel1.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
+        const coralBottomClone = coralModel3.clone();
         coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
         coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
         pipeBottom.add(coralBottomClone);
@@ -443,7 +492,7 @@ const updatePipes = (dt) => {
         bodyBottom.position.x -= PIPE_SPEED * dt;
 
         
-        if (bodyTop.position.x < -35) {
+        if (bodyTop.position.x == player.position.x -35) {
             luisito.scene.remove(pipe.top);
             world.removeBody(bodyTop);
             luisito.scene.remove(pipe.bottom);
@@ -510,7 +559,7 @@ luisito.update = (dt) => {
 
     
         // Verificar si el jugador está tocando la moneda basándose en la posición
-        if (player.position.distanceTo(coin.position) < 2 && !coin.collected) { // Ajusta el valor según sea necesario
+        if (player.position.distanceTo(coin.position) < 1.5 && !coin.collected) { // Ajusta el valor según sea necesario
            
     
             // Marcar la moneda como recogida
@@ -532,7 +581,7 @@ luisito.update = (dt) => {
         }
     });
 
-    const playerSpeed = 0.01; // Velocidad del jugador (suponiendo)
+    const playerSpeed = 0.01 + dt; // Velocidad del jugador (suponiendo)
 
     // Mover los fondos hacia la izquierda
     planes.forEach(plane => {
@@ -576,7 +625,8 @@ luisito.update = (dt) => {
         }
         
         if(vidas == 0){
-            player.position.set(1000,0,0);
+            world.removeBody(player);
+            luisito.scene.remove(player);
             player = null;
             sonido_fondo.stop();
             alert("Has muerto");

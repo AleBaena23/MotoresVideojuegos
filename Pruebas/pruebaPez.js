@@ -88,6 +88,10 @@ const textures = texturePaths.map(path => textureLoader.load(path));
 
 let pezModel = null;
 let coinModel = null;
+let coralModel1 = null;
+let coralModel2 = null;
+let coralModel3 = null;
+let escudoModel = null;
 let mixer = null;
 let action = null;
 
@@ -106,10 +110,34 @@ luisito.assets.loadAssets([
         name: 'Coin',
         type: 'gltfModel',
         path: 'static/models/Coin/moneda.glb'
+    },
+
+    {
+        name: 'Coral1',
+        type: 'gltfModel',
+        path: 'static/models/Corales/Coral1.glb'
+    },
+    {
+        name: 'Coral2',
+        type: 'gltfModel',
+        path: 'static/models/Corales/Coral2.glb'
+    },
+    {
+        name: 'Coral3',
+        type: 'gltfModel',
+        path: 'static/models/Corales/Coral3.glb'
+    },
+    {
+        name: 'Escudo',
+        type: 'gltfModel',
+        path: 'static/models/Corales/Coral3.glb'
     }
+
+
+
 ]);
 
-const cubeHalfExtents = new CANNON.Vec3(0.8, 0.8, 0.8);
+const cubeHalfExtents = new CANNON.Vec3(0.5,0.5,0.5);
 
 const coinSides = new CANNON.Vec3(0.75, 0.75, 0.75);
 
@@ -121,6 +149,21 @@ let coin = luisito.createObject();
 coin.position.set(0, 0, 0);
 
 let coins = []; // Array para almacenar las monedas
+// Función para crear un número fijo de monedas y añadirlas al array
+const initializeCoins = () => {
+    coins = []; // Reiniciar la lista de monedas
+    if(coinModel){
+        for (let i = 0; i < 10; i++) {
+            let coin = luisito.createObject();
+            let coinClone = coinModel.clone();
+            coin.add(coinClone);
+            coins.push(coin);
+            coin.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
+            luisito.scene.add(coin);
+        }
+    }
+    
+};
 
 let tocandoMoneda = false;
 
@@ -142,18 +185,41 @@ luisito.onAssetsLoaded = () => {
 
     coinModel = luisito.assets.get('Coin').scene;
     coinModel.scale.set(0.5, 0.5, 0.5);
-    coinModel.position.set(0, 0, 0);
+    coinModel.position.set(0, -1, 0);
     coinModel.rotateY(90);
-
-    // coin.add(coinModel);
     
-    // Crear un número fijo de monedas y añadirlas al array
-    for (let i = 0; i < 10; i++) {
+
+    //MODELOS CORALES
+
+
+
+    coralModel1 = luisito.assets.get('Coral1').scene;
+    coralModel1.scale.set(0,0,0);
+    coralModel1.position.set(0, 0, 0);
+    coralModel1.rotateY(90);
+
+    coralModel2 = luisito.assets.get('Coral2').scene;
+    coralModel2.scale.set(0,0,0);
+    coralModel2.position.set(0, 0, 0);
+    coralModel2.rotateY(90);
+
+    coralModel3 = luisito.assets.get('Coral3').scene;
+    coralModel3.scale.set(0,0,0);
+    coralModel3.position.set(0, 0, 0);
+    coralModel3.rotateY(90);
+
+
+    //MODELOS POWERUPS
+
+    
+     // Crear un número fijo de monedas y añadirlas al array
+     for (let i = 0; i < 100; i++) {
         let coin = luisito.createObject();
         let coinClone = coinModel.clone();
         coin.add(coinClone);
       
         coins.push(coin);
+        coin.position.set(-100,0,0)
         luisito.scene.add(coin);
     }
 
@@ -166,7 +232,7 @@ luisito.onAssetsLoaded = () => {
         luisito.physics.CreateBody({
             mass: 1,
             angularDamping: 0.96,
-            shape: new CANNON.Box(coinSides),
+            shape: new CANNON.Box(cubeHalfExtents),
             material: playerMaterial,
             // Bloquear rotación
             angularFactor: new CANNON.Vec3(0, 0, 0),
@@ -209,7 +275,7 @@ for (let i = 1; i < textures.length; i++) {
     luisito.scene.add(plane);
 }
 
-const THRUST_FORCE = 4.5;
+const THRUST_FORCE = 4;
 const MAX_VERTICAL_SPEED = THRUST_FORCE * 1.5;
 const UPPER_LIMIT = 9;
 const LOWER_LIMIT = -9;
@@ -233,6 +299,7 @@ const scoreElement = document.getElementById('score'); // Elemento en el DOM par
 const createPipe = () => {
     let pipeHeight;
     let pipeCenter;
+    
     do {
         pipeHeight = Math.random() * (PIPE_UPPER_LIMIT - PIPE_LOWER_LIMIT - 5) + 3;
         pipeCenter = PIPE_LOWER_LIMIT + pipeHeight / 2;
@@ -242,24 +309,67 @@ const createPipe = () => {
 
     const gap = PIPE_GAP;
 
+    // Creación de las tuberías (cubos)
     const pipeTop = luisito.createObject();
     const pipeBottom = luisito.createObject();
 
     const pipeTopHeight = PIPE_UPPER_LIMIT - gap / 2;
     const pipeBottomHeight = pipeHeight - gap / 2;
 
-    const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 20);
-    const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 20);
-    const material = new THREE.MeshStandardMaterial({ color: 'green' });
+    // const geometryTop = new THREE.BoxGeometry(1.75, pipeTopHeight, 20);
+    // const geometryBottom = new THREE.BoxGeometry(1.75, pipeBottomHeight, 20);
+    // const material = new THREE.MeshStandardMaterial({ color: 'green' });
 
-    const meshTop = new THREE.Mesh(geometryTop, material);
-    const meshBottom = new THREE.Mesh(geometryBottom, material);
+    // const meshTop = new THREE.Mesh(geometryTop, material);
+    // const meshBottom = new THREE.Mesh(geometryBottom, material);
 
-    pipeTop.add(meshTop);
-    pipeBottom.add(meshBottom);
+    // pipeTop.add(meshTop);
+    // pipeBottom.add(meshBottom);
 
-    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 1));
-    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 1));
+    let randomNumber = Math.floor(Math.random() * 3) + 1;
+
+
+    // Clonación y ajuste de los corales
+    if (coralModel1 || coralModel2 || coralModel3) {
+        if(randomNumber == 1){
+            const coralTopClone = coralModel1.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
+        const coralBottomClone = coralModel1.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        if(randomNumber == 2){
+            const coralTopClone = coralModel2.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
+        const coralBottomClone = coralModel1.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        if(randomNumber == 3){
+            const coralTopClone = coralModel3.clone();
+        coralTopClone.scale.set(1, pipeTopHeight, 1); // Ajusta el tamaño según sea necesario
+        coralTopClone.position.set(0, pipeTopHeight / 2, 0); // Ajusta la posición vertical
+        pipeTop.add(coralTopClone);
+
+        const coralBottomClone = coralModel1.clone();
+        coralBottomClone.scale.set(1, pipeBottomHeight*0.6 / 3, 1); // Ajusta el tamaño según sea necesario
+        coralBottomClone.position.set(0, -pipeBottomHeight / 2, 0); // Ajusta la posición vertical
+        pipeBottom.add(coralBottomClone);
+        }
+        
+    }
+
+    // Configuración de los cuerpos de Cannon.js para las tuberías
+    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 10));
+    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 10));
 
     const bodyTop = new CANNON.Body({
         mass: 0,
@@ -276,61 +386,51 @@ const createPipe = () => {
     });
 
     pipeTop.rigidbody = bodyTop;
-    
-    pipeTop.rigidbody.addEventListener("collide", (e) => {
-        
-        if(player != null){
-            
-            if(e.body.material == playerMaterial){
-                tocando = true
-                console.log("está tocando")
-                
-            }
-        }
-            
-        
-        
-        
-    });
     pipeBottom.rigidbody = bodyBottom;
-    pipeBottom.rigidbody.addEventListener("collide", (e) => {
-        
-        if(player != null){
-            
-            if(e.body.material == playerMaterial){
-                tocando = true
-                console.log("está tocando")
-                
-            }
+
+    // Manejadores de colisión para las tuberías
+    pipeTop.rigidbody.addEventListener("collide", (e) => {
+        if (player != null && e.body.material == playerMaterial) {
+            tocando = true;
+            console.log("Está tocando la tubería superior");
         }
-            
-        pipeTop.position.z = 10
-        pipeBottom.position.z = 10 
-        
-        
     });
 
+    pipeBottom.rigidbody.addEventListener("collide", (e) => {
+        if (player != null && e.body.material == playerMaterial) {
+            tocando = true;
+            console.log("Está tocando la tubería inferior");
+        }
+    });
+
+    // Agregar los cuerpos al mundo de Cannon.js
     world.addBody(bodyTop);
     world.addBody(bodyBottom);
 
+    // Agregar las tuberías al escenario de Three.js
     luisito.scene.add(pipeTop);
     luisito.scene.add(pipeBottom);
 
-    
+    // Crear nuevas monedas si no hay suficientes
+    if (coins.length === 0) {
+        initializeCoins(); // Reinicializar las monedas si se agotan
+    }
+
     // Colocar una moneda en una posición aleatoria cerca del centro de la tubería
     const coin = coins.shift(); // Tomar la primera moneda del array
     if (coin) {
-        coin.position.set(1, pipeCenter +5, 0); // Colocar la moneda cerca del centro de la tubería
+        coin.position.set(10.5, pipeCenter + 10.5, 0); // Colocar la moneda en el centro de la tubería
         coins.push(coin); // Devolver la moneda al final del array para reutilizarla
     }
-    
 
+    // Agregar las tuberías al array de tuberías
     pipes.push({ top: pipeTop, bottom: pipeBottom, scored: false }); // Agregamos la propiedad 'scored'
 };
 
+
 const spawnPipes = () => {
     createPipe();
-    setTimeout(spawnPipes, PIPE_INTERVAL * 1000);
+    setTimeout(spawnPipes, PIPE_INTERVAL * 1200);
 };
 
 const updatePipes = (dt) => {
@@ -342,7 +442,7 @@ const updatePipes = (dt) => {
         bodyTop.position.x -= PIPE_SPEED * dt;
         bodyBottom.position.x -= PIPE_SPEED * dt;
 
-          
+        
         if (bodyTop.position.x < -35) {
             luisito.scene.remove(pipe.top);
             world.removeBody(bodyTop);
@@ -394,37 +494,44 @@ const checkPositionLimits = () => {
 var vidas = 1;
 player.position.z = 0
 
+const calculateDistance = (x1, x2) => {
+    const dx = x2 - x1;
+    return Math.sqrt(dx * dx);
+};
 
 luisito.update = (dt) => {
     const input = luisito.input;
-    console.log("Posición del jugador:", player.position);
 
 
-    
+
     coins.forEach(coin => {
         coin.position.x -= PIPE_SPEED * dt;
-        coin.rotateY(dt);
-        console.log("Posición de la moneda:", coin.position);
+        coin.rotateY(-dt);
+
+    
         // Verificar si el jugador está tocando la moneda basándose en la posición
-        if (player.position.distanceTo(coin.position) < 1) { // Ajusta el valor según sea necesario
-            console.log("Tocando moneda");
-            tocandoMoneda = true
-            if(tocandoMoneda){
-                // Incrementar el puntaje y actualizar la interfaz
+        if (player.position.distanceTo(coin.position) < 2 && !coin.collected) { // Ajusta el valor según sea necesario
+           
+    
+            // Marcar la moneda como recogida
+            coin.collected = true;
+    
+            // Incrementar el puntaje y actualizar la interfaz
             score++;
             scoreElement.textContent = score.toString();
-            // Marcar que se tocó una moneda (si es necesario para lógica adicional)
-            tocandoMoneda = false;
-            }
+    
             // Eliminar la moneda de la escena
             luisito.scene.remove(coin);
-    
-            
-    
-            
+        }
+
+        let distance = calculateDistance(coin.position.x, player.position.x)
+          
+        if (coin.position.x == player.position.x -35) {
+            luisito.scene.remove(coin);
+            world.removeBody(coin);
         }
     });
-    
+
     const playerSpeed = 0.01; // Velocidad del jugador (suponiendo)
 
     // Mover los fondos hacia la izquierda
@@ -482,7 +589,11 @@ luisito.update = (dt) => {
 
     updatePipes(dt);
 };
+setTimeout(() => {
+    spawnPipes(); // Pregunta, ¿las tuberías despawnean?
+    // Coloca aquí el código que quieres ejecutar después del retraso
+    console.log("Se ha ejecutado después del retraso.");
+}, 1000); // 1000 milisegundos = 1 segundo
 
-spawnPipes(); // Pregunta, ¿las tuberías despawnean?
 world.defaultContactMaterial.contactEquationStiffness = 100
 luisito.start();

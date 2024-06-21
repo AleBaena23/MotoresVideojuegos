@@ -91,6 +91,8 @@ let action = null;
 const sonido_fondo = luisito.audio.createSound()
 const sonido_burbuja = luisito.audio.createSound()
 const sonido_moneda = luisito.audio.createSound()
+const sonido_escudo = luisito.audio.createSound()
+const sonido_rayo = luisito.audio.createSound()
 const sonido_perder = luisito.audio.createSound()
 
 luisito.assets.loadAssets([
@@ -271,6 +273,18 @@ luisito.onAssetsLoaded = () => {
     audioLoader.load( '/static/sounds/moneda.mp3', function( buffer ) {
         sonido_moneda.setBuffer( buffer );
         sonido_moneda.setVolume(0.8);
+    });
+    
+    // Sonido cuando recogemos el escudo
+    audioLoader.load( '/static/sounds/escudo.mp3', function( buffer ) {
+        sonido_escudo.setBuffer( buffer );
+        sonido_escudo.setVolume(0.8);
+    });
+    
+    // Sonido cuando recogemos el rayo
+    audioLoader.load( '/static/sounds/rayo.mp3', function( buffer ) {
+        sonido_rayo.setBuffer( buffer );
+        sonido_rayo.setVolume(0.8);
     });
 
     // Sonido cuando perdemos la partida
@@ -785,7 +799,7 @@ luisito.update = (dt) => {
     
             player.add(sphereEscudo)
             // Reproducir un sonido de feedback
-            sonido_moneda.play();
+            sonido_escudo.play();
             escudoAct = true
             // Eliminar la moneda de la escena
             luisito.scene.remove(escudo);
@@ -804,7 +818,7 @@ luisito.update = (dt) => {
                 // Marcar la moneda como recogida
                 escudo.collected = true;
                 // Reproducir un sonido de feedback
-                sonido_moneda.play();
+                sonido_escudo.play();
 
                 // Eliminar la moneda de la escena
                 luisito.scene.remove(escudo);
@@ -841,7 +855,7 @@ luisito.update = (dt) => {
                 tiempoCompletado = true;
             }, 10000);
             // Reproducir un sonido de feedback
-            sonido_moneda.play();
+            sonido_rayo.play();
             if(escudoAct == true){
                 escudoAct = false
                 player.remove(sphereEscudo)
@@ -929,6 +943,9 @@ luisito.update = (dt) => {
             player = null;
             sonido_fondo.stop();
             sonido_moneda.stop();
+            sonido_burbuja.stop();
+            sonido_escudo.stop();
+            sonido_rayo.stop();
             sonido_perder.play();
             // alert("Has muerto");
             // window.location.reload();

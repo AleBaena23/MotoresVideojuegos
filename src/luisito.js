@@ -10,6 +10,7 @@ import Mesh from './mesh';
 import Light from './lights';
 import Physics from './physics';
 import AssetManager from './assetManager';
+import Audio from './audio';
 
 class Luisito {
     constructor() {

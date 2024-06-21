@@ -77,6 +77,7 @@ let coralModel1 = null;
 let coralModel2 = null;
 let coralModel3 = null;
 let escudoModel = null;
+let rayoModel = null;
 let mixer = null;
 let action = null;
 
@@ -118,8 +119,14 @@ luisito.assets.loadAssets([
     {
         name: 'Escudo',
         type: 'gltfModel',
-        path: 'static/models/PowerUps/escudo.glb'
+        path: 'static/models/PowerUps/escudo1.glb'
+    },
+    {
+        name: 'Rayo',
+        type: 'gltfModel',
+        path: 'static/models/PowerUps/rayo.glb'
     }
+
 
 
 
@@ -137,25 +144,10 @@ let coin = luisito.createObject();
 coin.position.set(0, 0, 0);
 
 let coins = []; // Array para almacenar las monedas
-// Función para crear un número fijo de monedas y añadirlas al array
-const initializeCoins = () => {
-    coins = []; // Reiniciar la lista de monedas
-    if(coinModel || escudoModel){
-        for (let i = 0; i < 1; i++) {
-            let randomNumber = Math.floor(Math.random() * 15) + 1;
-            if(randomNumber != 14){
-                let coin = luisito.createObject();
-            let coinClone = coinModel.clone();
-            coin.add(coinClone);
-            coins.push(coin);
-            coin.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
-            luisito.scene.add(coin);
-            }
-            
-        }
-    }
-    
-};
+
+let escudos = [];
+
+let rayos = [];
 
 luisito.onAssetsLoaded = () => {
 
@@ -201,8 +193,16 @@ luisito.onAssetsLoaded = () => {
 
     escudoModel = luisito.assets.get('Escudo').scene;
     escudoModel.scale.set(1,1,1);
-    escudoModel.position.set(0, 0, 0);
-    escudoModel.rotateY(0);
+    escudoModel.position.set(0, 0, -10);
+    escudoModel.rotateY(90);
+
+    rayoModel = luisito.assets.get('Rayo').scene;
+    rayoModel.scale.set(1,1,1);
+    rayoModel.position.set(0, 0, -10);
+    rayoModel.rotateY(90);
+
+
+
     
      // Crear un número fijo de monedas y añadirlas al array
 
@@ -440,14 +440,43 @@ const createPipe = () => {
 
     // Colocar una moneda en una posición aleatoria cerca del centro de la tubería
     // const coin = coins.shift(); // Tomar la primera moneda del array
+    let randomNumberObjeto = Math.floor(Math.random() * 20) + 1;
 
-    const coin = coinModel.clone()
+    if(randomNumberObjeto == 16 || randomNumberObjeto == 17){
+        const escudo = escudoModel.clone()
+
+        if (escudo){
+            escudo.position.set(10.5, pipeCenter + 10.5, 0); // Colocar la moneda en el centro de la tubería
+            luisito.scene.add(escudo)
+            escudos.push(escudo); // Devolver la moneda al final del array para reutilizarla
+        }
+
+    }
+    else if(randomNumberObjeto == 20){
+
+            const rayo = rayoModel.clone()
+
+        if(rayo){
+
+            rayo.position.set(10.5, pipeCenter + 10.5, 0); // Colocar la moneda en el centro de la tubería
+            luisito.scene.add(rayo)
+            rayos.push(rayo); // Devolver la moneda al final del array para reutilizarla
+        }
+
+    }
+
+    else{
+        const coin = coinModel.clone()
     
     if (coin) {
         coin.position.set(10.5, pipeCenter + 10.5, 0); // Colocar la moneda en el centro de la tubería
         luisito.scene.add(coin)
         coins.push(coin); // Devolver la moneda al final del array para reutilizarla
     }
+    }
+    
+
+    
 
     // Agregar las tuberías al array de tuberías
     pipes.push({ top: pipeTop, bottom: pipeBottom, scored: false }); // Agregamos la propiedad 'scored'
@@ -568,14 +597,22 @@ player.position.z = 0
 luisito.update = (dt) => {
     const input = luisito.input;
 
-    if(coin){
-        coin.position.x -= PIPE_SPEED * dt;
-        coin.rotateY(-dt);
-    }
-    // Crear nuevas monedas si no hay suficientes
-    if (coins.length == 0) {
-        initializeCoins(); // Reinicializar las monedas si se agotan
-    }
+    // if(coin){
+    //     coin.position.x -= PIPE_SPEED * dt;
+    //     coin.rotateY(-dt);
+    // }
+
+    // if(escudo){
+    //     escudo.position.x -= PIPE_SPEED * dt;
+    //     escudo.rotateY(-dt);
+    // }
+
+    // if(rayo){
+    //     rayo.position.x -= PIPE_SPEED * dt;
+    //     rayo.rotateY(-dt);
+    // }
+
+
 
     coins.forEach(coin => {
         coin.position.x -= PIPE_SPEED * dt;
@@ -602,6 +639,62 @@ luisito.update = (dt) => {
         }          
         setTimeout(() => {
             removeCoin(coin);
+        }, REMOVE_INTERVAL_COIN);
+        }
+        
+    });
+
+
+    escudos.forEach(escudo => {
+        escudo.position.x -= PIPE_SPEED * dt;
+        escudo.rotateY(-dt);
+
+        if(escudo){
+            // Verificar si el jugador está tocando la moneda basándose en la posición
+        if (player.position.distanceTo(escudo.position) < 2 && !coin.collected) { // Ajusta el valor según sea necesario
+           
+    
+            // Marcar la moneda como recogida
+            coin.collected = true;
+    
+
+            // Reproducir un sonido de feedback
+            sonido_moneda.play();
+    
+            // Eliminar la moneda de la escena
+            luisito.scene.remove(escudo);
+            escudos.splice(index, 1);
+        }          
+        setTimeout(() => {
+            removeCoin(escudo);
+        }, REMOVE_INTERVAL_COIN);
+        }
+        
+    });
+
+
+
+    rayos.forEach(rayo => {
+        rayo.position.x -= PIPE_SPEED * dt;
+        rayo.rotateY(-dt);
+
+        if(rayo){
+            // Verificar si el jugador está tocando la moneda basándose en la posición
+        if (player.position.distanceTo(rayo.position) < 2 && !coin.collected) { // Ajusta el valor según sea necesario
+           
+    
+            // Marcar la moneda como recogida
+            coin.collected = true;
+
+            // Reproducir un sonido de feedback
+            sonido_moneda.play();
+    
+            // Eliminar la moneda de la escena
+            luisito.scene.remove(rayo);
+            rayos.splice(index, 1);
+        }          
+        setTimeout(() => {
+            removeCoin(rayo);
         }, REMOVE_INTERVAL_COIN);
         }
         

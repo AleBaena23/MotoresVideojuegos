@@ -84,6 +84,7 @@ let action = null;
 const sonido_fondo = new THREE.Audio(listener)
 const sonido_burbuja = new THREE.Audio(listener)
 const sonido_moneda = new THREE.Audio(listener)
+const sonido_perder = new THREE.Audio(listener)
 
 luisito.assets.loadAssets([
     // Modelos
@@ -260,7 +261,12 @@ luisito.onAssetsLoaded = () => {
         sonido_moneda.setBuffer( buffer );
         sonido_moneda.setVolume(0.8);
     });
-     
+
+    // Sonido cuando perdemos la partida
+    audioLoader.load( '/static/sounds/lose.mp3', function( buffer ) {
+        sonido_perder.setBuffer( buffer );
+        sonido_perder.setVolume(0.8);
+    });
 };
 
 
@@ -623,6 +629,7 @@ luisito.update = (dt) => {
             luisito.scene.remove(player);
             player = null;
             sonido_fondo.stop();
+            sonido_perder.play();
             // alert("Has muerto");
             // window.location.reload();
 

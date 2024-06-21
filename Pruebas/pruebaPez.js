@@ -10,11 +10,6 @@ import Luisito from '/src/luisito.js';
 const luisito = new Luisito();
 luisito.camera.instance.position.set(0, 0, 20);
 
-// Creamos el audio listener y se lo metemos a la cámara
-const listener = new THREE.AudioListener();
-luisito.camera.instance.add(listener);
-
-
 const world = luisito.physics.world;
 world.gravity.set(0, -8, 0);
 
@@ -82,10 +77,10 @@ let mixer = null;
 let action = null;
 
 // Sonidos
-const sonido_fondo = new THREE.Audio(listener)
-const sonido_burbuja = new THREE.Audio(listener)
-const sonido_moneda = new THREE.Audio(listener)
-const sonido_perder = new THREE.Audio(listener)
+const sonido_fondo = luisito.audio.createSound()
+const sonido_burbuja = luisito.audio.createSound()
+const sonido_moneda = luisito.audio.createSound()
+const sonido_perder = luisito.audio.createSound()
 
 luisito.assets.loadAssets([
     // Modelos

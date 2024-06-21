@@ -9,6 +9,9 @@ export default class Window extends EventDispatcher{
         this.height = window.innerHeight
         this.aspectRatio = this.width / this.height
         this.pixelRatio = Math.min(window.devicePixelRatio,2)
+        this.logger = luisito.logger;
+
+        this.logger.info("Llamando a la clase Window");
 
         window.addEventListener('resize', () => {
             this.width = window.innerWidth

@@ -5,7 +5,7 @@ export default class Light{
     constructor(luisito){
         this.scene = luisito.scene
         this.logger = luisito.logger
-        this.logger.info('Light constructor called')
+        this.logger.info("Llamando a la clase Luces")
     }
 
     //MARK: Métodos para crear luces

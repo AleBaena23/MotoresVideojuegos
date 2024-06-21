@@ -21,10 +21,10 @@ class Luisito {
         this.totalElapsedInSeconds = 0;
 
         // HERRAMIENTAS QUE AÑADADIMOS NOSOTROS
+        this.logger = new Logger(this);
         this.input = new Input(this);
         this.scene = new THREE.Scene();
         this.window = new Window(this);
-        this.logger = new Logger(this);
         this.camera = new Camera(this);
         this.renderer = new Renderer(this);
         this.light = new Light(this);

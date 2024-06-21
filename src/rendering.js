@@ -7,6 +7,9 @@ export default class Renderer {
         this.scene = luisito.scene;
         this.camera = luisito.camera;
         this.window = luisito.window;
+        this.logger = luisito.logger;
+
+        this.logger.info("Llamando a la clase Rendering");
         
         this.instance = new THREE.WebGLRenderer({antialias: true})
         this.instance.shadowMap.enabled = true

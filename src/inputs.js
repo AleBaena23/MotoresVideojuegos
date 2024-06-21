@@ -3,6 +3,8 @@ export default class Input {
         
         this.pressedKeys = {};
         this.mouseButtons = {};
+        this.logger = luisito.logger;
+        this.logger.info("Llamando a la clase Imput");
 
         // Manejadores de eventos de teclado
         window.addEventListener(

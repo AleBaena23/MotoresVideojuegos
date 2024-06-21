@@ -9,7 +9,8 @@ export default class Physics{
         this.world = new CANNON.World()
         this.logger = luisito.logger
         this.cannonDebugger = new CannonDebugger(this.scene, this.world, {})
-        this.logger.info('Physics constructor called')
+        
+        this.logger.info("Llamando a la clase Físicas");
 
     }
 

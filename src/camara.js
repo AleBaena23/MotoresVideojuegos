@@ -5,6 +5,9 @@ export default class Camera {
     constructor(luisito) {
         this.window = luisito.window;
         this.scene = luisito.scene;
+        this.logger = luisito.logger;
+        
+        this.logger.info("Llamando a la clase Cámara");
 
         const aspect = this.window.width / this.window.height;
         const frustumSize = 20; // Puedes ajustar este valor según tus necesidades

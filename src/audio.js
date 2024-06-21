@@ -3,13 +3,8 @@ import * as THREE from 'three';
 export default class Audio {
 
     constructor(luisito) {
-        
-        // Invocamos la cámara y creamos el listener de audio
-        this.camera = luisito.camera.instance;
-        this.listener = new THREE.AudioListener();
-        
-        // Añadimos el listener a la cámara
-        this.camera.add(this.listener);
+        this.logger = luisito.logger;
+        this.logger.info("Llamando a la clase Audio");
     }
 
     createSound(){

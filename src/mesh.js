@@ -5,6 +5,9 @@ import * as THREE from 'three'
 export default class Mesh{
     constructor(luisito){
         this.scene = luisito.scene
+        this.logger = luisito.logger;
+
+        this.logger.info("Llamando a la clase Mesh");
     
     }
 

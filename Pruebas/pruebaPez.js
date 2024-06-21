@@ -141,7 +141,7 @@ let coins = []; // Array para almacenar las monedas
 const initializeCoins = () => {
     coins = []; // Reiniciar la lista de monedas
     if(coinModel || escudoModel){
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 1; i++) {
             let randomNumber = Math.floor(Math.random() * 15) + 1;
             if(randomNumber != 14){
                 let coin = luisito.createObject();
@@ -150,14 +150,6 @@ const initializeCoins = () => {
             coins.push(coin);
             coin.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
             luisito.scene.add(coin);
-            }
-            else{
-                let escudo = luisito.createObject();
-            let escudoClone = escudoModel.clone();
-            escudo.add(escudoClone);
-            coins.push(escudo);
-            escudo.position.set(-100, 0, 0); // Posición inicial de las monedas fuera de la vista
-            luisito.scene.add(escudo);
             }
             
         }
@@ -213,15 +205,7 @@ luisito.onAssetsLoaded = () => {
     escudoModel.rotateY(0);
     
      // Crear un número fijo de monedas y añadirlas al array
-     for (let i = 0; i < 100; i++) {
-        let coin = luisito.createObject();
-        let coinClone = coinModel.clone();
-        coin.add(coinClone);
-      
-        coins.push(coin);
-        coin.position.set(-100,0,0)
-        luisito.scene.add(coin);
-    }
+
 
     mixer = new THREE.AnimationMixer(luisito.assets.get('Pez').scene);
     action = mixer.clipAction(luisito.assets.get('Pez').animations[0]);
@@ -307,8 +291,8 @@ const PIPE_INTERVAL = 1.5;
 const PIPE_SPEED = 6;
 let lastPipeCenter = 0;
 var tocando = false;
-
-
+const REMOVE_INTERVAL = 7000; // Intervalo en milisegundos para eliminar las tuberías
+const REMOVE_INTERVAL_COIN = 7000
 // Variables globales
 let score = 0; // Solo se declara una vez aquí
 
@@ -409,8 +393,8 @@ const createPipe = () => {
     }
 
     // Configuración de los cuerpos de Cannon.js para las tuberías
-    const shapeTop = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeTopHeight / 2, 10));
-    const shapeBottom = new CANNON.Box(new CANNON.Vec3(1.75 / 2, pipeBottomHeight / 2, 10));
+    const shapeTop = new CANNON.Box(new CANNON.Vec3(0.33, pipeTopHeight / 2, 10));
+    const shapeBottom = new CANNON.Box(new CANNON.Vec3(0.33, pipeBottomHeight / 2, 10));
 
     const bodyTop = new CANNON.Body({
         mass: 0,
@@ -452,21 +436,48 @@ const createPipe = () => {
     luisito.scene.add(pipeTop);
     luisito.scene.add(pipeBottom);
 
-    // Crear nuevas monedas si no hay suficientes
-    if (coins.length === 0) {
-        initializeCoins(); // Reinicializar las monedas si se agotan
-    }
+    
 
     // Colocar una moneda en una posición aleatoria cerca del centro de la tubería
-    const coin = coins.shift(); // Tomar la primera moneda del array
+    // const coin = coins.shift(); // Tomar la primera moneda del array
+
+    const coin = coinModel.clone()
+    
     if (coin) {
         coin.position.set(10.5, pipeCenter + 10.5, 0); // Colocar la moneda en el centro de la tubería
+        luisito.scene.add(coin)
         coins.push(coin); // Devolver la moneda al final del array para reutilizarla
     }
 
     // Agregar las tuberías al array de tuberías
     pipes.push({ top: pipeTop, bottom: pipeBottom, scored: false }); // Agregamos la propiedad 'scored'
+
+    
 };
+
+// Función para eliminar una tubería
+const removePipe = (pipe) => {
+    const index = pipes.indexOf(pipe);
+    if (index !== -1) {
+        const bodyTop = pipe.top.rigidbody;
+        const bodyBottom = pipe.bottom.rigidbody;
+
+        luisito.scene.remove(pipe.top);
+        world.removeBody(bodyTop);
+        luisito.scene.remove(pipe.bottom);
+        luisito.scene.remove(pipe);
+        world.removeBody(bodyBottom);
+        pipes.splice(index, 1);
+    }
+};
+
+const removeCoin = (coin) => {
+    const index = coins.indexOf(coin);
+    if (index !== -1){
+        luisito.scene.remove(coin);
+        coins.splice(index, 1);
+    }
+}
 
 
 const spawnPipes = () => {
@@ -483,21 +494,24 @@ const updatePipes = (dt) => {
         bodyTop.position.x -= PIPE_SPEED * dt;
         bodyBottom.position.x -= PIPE_SPEED * dt;
 
-        
-        if (bodyTop.position.x == player.position.x -35) {
-            luisito.scene.remove(pipe.top);
-            world.removeBody(bodyTop);
-            luisito.scene.remove(pipe.bottom);
-            world.removeBody(bodyBottom);
-            pipes.splice(i, 1);
-        }
-
+        console.log(pipe.top.position)
+        console.log(player.position)
         pipe.top.position.copy(bodyTop.position);
         pipe.top.quaternion.copy(bodyTop.quaternion);
 
         pipe.bottom.position.copy(bodyBottom.position);
         pipe.bottom.quaternion.copy(bodyBottom.quaternion);
 
+
+        
+        if (pipe.top.position.x == 0) {
+            luisito.scene.remove(pipe);
+            luisito.scene.remove(bodyTop);
+            world.removeBody(bodyTop);
+            luisito.scene.remove(pipe.bottom);
+            world.removeBody(bodyBottom);
+            pipes.splice(i, 1);
+        }
         // Verificar si el jugador pasa por el centro del tubo
         if (!pipe.scored && player.position.x > pipe.top.position.x) {
             pipe.scored = true; // Marcamos como puntuado para evitar sumar más de una vez
@@ -505,6 +519,10 @@ const updatePipes = (dt) => {
             // Aquí podríamos reproducir un pequeño sonido de feedback
             scoreElement.textContent = score.toString(); // Actualizamos la UI del puntaje
         }
+        // Programar la eliminación de la tubería después de REMOVE_INTERVAL milisegundos
+    setTimeout(() => {
+        removePipe(pipe);
+    }, REMOVE_INTERVAL);
     }
 };
 
@@ -550,15 +568,22 @@ player.position.z = 0
 luisito.update = (dt) => {
     const input = luisito.input;
 
-
+    if(coin){
+        coin.position.x -= PIPE_SPEED * dt;
+        coin.rotateY(-dt);
+    }
+    // Crear nuevas monedas si no hay suficientes
+    if (coins.length == 0) {
+        initializeCoins(); // Reinicializar las monedas si se agotan
+    }
 
     coins.forEach(coin => {
         coin.position.x -= PIPE_SPEED * dt;
         coin.rotateY(-dt);
 
-    
-        // Verificar si el jugador está tocando la moneda basándose en la posición
-        if (player.position.distanceTo(coin.position) < 1.5 && !coin.collected) { // Ajusta el valor según sea necesario
+        if(coin){
+            // Verificar si el jugador está tocando la moneda basándose en la posición
+        if (player.position.distanceTo(coin.position) < 1.25 && !coin.collected) { // Ajusta el valor según sea necesario
            
     
             // Marcar la moneda como recogida
@@ -573,11 +598,13 @@ luisito.update = (dt) => {
     
             // Eliminar la moneda de la escena
             luisito.scene.remove(coin);
+            coins.splice(index, 1);
         }          
-        if (coin.position.x == player.position.x -35) {
-            luisito.scene.remove(coin);
-            world.removeBody(coin);
+        setTimeout(() => {
+            removeCoin(coin);
+        }, REMOVE_INTERVAL_COIN);
         }
+        
     });
 
     const playerSpeed = 0.01 + dt; // Velocidad del jugador (suponiendo)
@@ -587,7 +614,7 @@ luisito.update = (dt) => {
         plane.position.x -= playerSpeed*3;
         
         // Si un plano se mueve más allá del límite izquierdo, lo reposicionamos al final
-        if (plane.position.x < -40) {
+        if (plane.position.x < -60) {
             const lastPlane = planes[planes.length - 1];
             plane.position.x = lastPlane.position.x + 40;
             

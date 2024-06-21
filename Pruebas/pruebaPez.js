@@ -80,8 +80,10 @@ let escudoModel = null;
 let mixer = null;
 let action = null;
 
+// Sonidos
 const sonido_fondo = new THREE.Audio(listener)
 const sonido_burbuja = new THREE.Audio(listener)
+const sonido_moneda = new THREE.Audio(listener)
 
 luisito.assets.loadAssets([
     // Modelos
@@ -238,6 +240,8 @@ luisito.onAssetsLoaded = () => {
     );
 
     // CARGAMOS LOS SONIDOS
+
+    // Sonido de audio demoníaco en bucle
     audioLoader.load( '/static/sounds/beach_party.mp3', function( buffer ) {
         sonido_fondo.setBuffer( buffer );
         sonido_fondo.setLoop(true);
@@ -245,9 +249,16 @@ luisito.onAssetsLoaded = () => {
         sonido_fondo.play();
     });
     
+    // Sonido cuando hacemos que el pez suba
     audioLoader.load( '/static/sounds/bubble_up.mp3', function( buffer ) {
         sonido_burbuja.setBuffer( buffer );
         sonido_burbuja.setVolume(0.8);
+    });
+
+    // Sonido cuando recogemos una moneda
+    audioLoader.load( '/static/sounds/moneda.mp3', function( buffer ) {
+        sonido_moneda.setBuffer( buffer );
+        sonido_moneda.setVolume(0.8);
     });
      
 };
@@ -550,6 +561,9 @@ luisito.update = (dt) => {
             // Incrementar el puntaje y actualizar la interfaz
             score++;
             scoreElement.textContent = score.toString();
+
+            // Reproducir un sonido de feedback
+            sonido_moneda.play();
     
             // Eliminar la moneda de la escena
             luisito.scene.remove(coin);
@@ -587,11 +601,12 @@ luisito.update = (dt) => {
             if (input.isKeyPressed('ArrowUp')) {
                 pulsando = true;
                 applyJumpForce();
-                // Aquí podríamos insertar un audio cuando sube
-                sonido_burbuja.play();
+
+                // Reproducimos el sonido de la burbuja
+                sonido_burbuja.play(); 
+
             } else {
                 pulsando = false;
-                // Aquí podríamos reproducir un audio cuando baja
             }
 
             checkPositionLimits();
